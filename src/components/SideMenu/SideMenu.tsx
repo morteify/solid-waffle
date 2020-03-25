@@ -9,6 +9,7 @@ function SideMenu() {
   const handleClick = (event: ClickParam) => {
     history.push(`/${event.key}`);
   };
+
   return (
     <Menu
       onClick={handleClick}

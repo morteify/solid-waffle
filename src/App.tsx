@@ -1,7 +1,13 @@
-import React, { Fragment } from "react";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
 import "./App.css";
 import SideMenu from "./components/SideMenu/SideMenu";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import SongsView from "../src/views/SongsView/SongsView";
 
 function App() {
   return (
@@ -9,15 +15,12 @@ function App() {
       <div className="App">
         <SideMenu />
         <Switch>
-          <Route exact path="/">
-            <div>home</div>
-          </Route>
+          <Redirect exact from="/" to="/home" />
+
           <Route path="/home">
             <div>home</div>
           </Route>
-          <Route path="/songs">
-            <div>songs</div>
-          </Route>
+          <Route path="/songs" component={SongsView} />
           <Route path="/albums">
             <div>albums</div>
           </Route>
