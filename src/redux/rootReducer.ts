@@ -1,5 +1,8 @@
+import tracks from './features/tracks';
 import { combineReducers } from '@reduxjs/toolkit';
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+  tracks,
+});
 
 export default rootReducer;

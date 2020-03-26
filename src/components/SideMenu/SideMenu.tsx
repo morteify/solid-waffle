@@ -1,7 +1,7 @@
-import React from "react";
-import { Menu } from "antd";
-import { ClickParam } from "antd/lib/menu";
-import { useHistory } from "react-router-dom";
+import React from 'react';
+import { Menu } from 'antd';
+import { ClickParam } from 'antd/lib/menu';
+import { useHistory } from 'react-router-dom';
 
 function SideMenu() {
   const history = useHistory();
@@ -13,9 +13,9 @@ function SideMenu() {
   return (
     <Menu
       onClick={handleClick}
-      style={{ width: 256, height: "100vh" }}
-      defaultSelectedKeys={["home"]}
-      defaultOpenKeys={["sub1"]}
+      style={{ width: 256, height: '100vh' }}
+      defaultSelectedKeys={['home']}
+      defaultOpenKeys={['sub1']}
       mode="inline"
     >
       <Menu.ItemGroup key="g1" title="Browse Music">

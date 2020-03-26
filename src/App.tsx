@@ -1,13 +1,8 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect
-} from "react-router-dom";
-import "./App.css";
-import SideMenu from "./components/SideMenu/SideMenu";
-import SongsView from "../src/views/SongsView/SongsView";
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import './App.css';
+import SideMenu from './components/SideMenu/SideMenu';
+import Tracks from './views/TracksView/TracksView';
 
 function App() {
   return (
@@ -20,7 +15,7 @@ function App() {
           <Route path="/home">
             <div>home</div>
           </Route>
-          <Route path="/songs" component={SongsView} />
+          <Route path="/songs" component={Tracks} />
           <Route path="/albums">
             <div>albums</div>
           </Route>
