@@ -6,7 +6,7 @@ import { fetchTracksEpic } from './tracks';
 export const rootEpic = combineEpics(fetchTracksEpic);
 
 export const rootReducer = combineReducers({
-  tracks: tracks,
+  tracks,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducer>;

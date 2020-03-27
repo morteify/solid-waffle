@@ -1,9 +1,8 @@
-import { createSlice, PayloadAction, AnyAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ajax } from 'rxjs/ajax';
-import { map, filter, mergeMap, mapTo, delay, catchError } from 'rxjs/operators';
-import { ofType, Epic, StateObservable } from 'redux-observable';
-import { Observable, of } from 'rxjs';
-import { ActionType, isActionOf } from 'typesafe-actions';
+import { map, mergeMap, catchError } from 'rxjs/operators';
+import { ofType, Epic } from 'redux-observable';
+import { of } from 'rxjs';
 
 export interface Track {
   title: string;
@@ -44,10 +43,6 @@ const tracks = createSlice({
   },
 });
 export const { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure } = tracks.actions;
-// export type TracksActions =
-//   | ReturnType<typeof fetchTracksStart>
-//   | ReturnType<typeof fetchTracksSuccess>
-//   | ReturnType<typeof fetchTracksFailure>;
 
 export const fetchTracksEpic: Epic<ReturnType<typeof fetchTracksStart>, ReturnType<typeof fetchTracksSuccess>> = (
   action$,
