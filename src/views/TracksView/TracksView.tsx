@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Track } from '../../redux/features/tracks';
 import { useHistory } from 'react-router-dom';
 import { Howl, Howler } from 'howler';
+import { useDispatch } from 'react-redux';
+import { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure } from '../../redux/features/tracks';
 
 function createSound(...urls: Array<string>): Howl {
   const sound = new Howl({
@@ -21,21 +23,24 @@ function createSound(...urls: Array<string>): Howl {
   return sound;
 }
 
-function TracksView() {
+function TracksView(): JSX.Element {
+  const dispatch = useDispatch();
   const history = useHistory();
   const [tracks, setTracks] = useState<Array<Partial<Track>> | null>(null);
   useEffect(() => {
-    fetch('https://funkwhale.it/api/v1/tracks')
-      .then((response) => response.json())
-      .then((result) => setTracks(result.results));
+    dispatch(fetchTracksStart());
+
+    // fetch('https://funkwhale.it/api/v1/tracks')
+    //   .then((response) => response.json())
+    //   .then((result) => setTracks(result.results));
   }, []);
 
   return (
     <>
       <div>Songs view</div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {tracks?.map((track) => (
-          <>
+        {tracks?.map((track, index) => (
+          <div key={index}>
             <p
               onClick={(): void => {
                 const sound = createSound('https://funkwhale.it' + track.listen_url);
@@ -45,7 +50,7 @@ function TracksView() {
               {track.title}
             </p>
             <p>{track.listen_url}</p>
-          </>
+          </div>
         ))}
       </div>
     </>

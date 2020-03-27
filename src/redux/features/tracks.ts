@@ -1,4 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, AnyAction } from '@reduxjs/toolkit';
+import { ajax } from 'rxjs/ajax';
+import { map, filter, mergeMap, mapTo, delay, catchError } from 'rxjs/operators';
+import { ofType, Epic, StateObservable } from 'redux-observable';
+import { Observable, of } from 'rxjs';
+import { ActionType, isActionOf } from 'typesafe-actions';
 
 export interface Track {
   title: string;
@@ -27,8 +32,8 @@ const tracks = createSlice({
       state.loading = true;
       state.error = null;
     },
-    fetchTracksSuccess(state, action: PayloadAction<Array<Track>>): void {
-      state.tracks = action.payload;
+    fetchTracksSuccess(state, action: PayloadAction<any>): void {
+      state.tracks = action.payload.results;
       state.loading = false;
       state.error = null;
     },
@@ -38,6 +43,23 @@ const tracks = createSlice({
     },
   },
 });
-
 export const { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure } = tracks.actions;
+// export type TracksActions =
+//   | ReturnType<typeof fetchTracksStart>
+//   | ReturnType<typeof fetchTracksSuccess>
+//   | ReturnType<typeof fetchTracksFailure>;
+
+export const fetchTracksEpic: Epic<ReturnType<typeof fetchTracksStart>, ReturnType<typeof fetchTracksSuccess>> = (
+  action$,
+) =>
+  action$.pipe(
+    ofType(fetchTracksStart.type),
+    mergeMap((action) =>
+      ajax.getJSON('https://funkwhale.it/api/v1/tracks').pipe(
+        map((response) => fetchTracksSuccess(response)),
+        catchError((error) => of(fetchTracksFailure(JSON.stringify(error)))),
+      ),
+    ),
+  );
+
 export default tracks.reducer;
