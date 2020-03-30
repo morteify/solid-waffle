@@ -9,4 +9,4 @@ export const rootReducer = combineReducers({
   tracks,
 });
 
-export type RootReducerType = ReturnType<typeof rootReducer>;
+export type RootReducer = ReturnType<typeof rootReducer>;

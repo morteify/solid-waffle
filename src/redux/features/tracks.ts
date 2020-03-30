@@ -47,6 +47,8 @@ const tracks = createSlice({
   },
 });
 
+export type TracksType = ReturnType<typeof tracks.reducer>;
+
 export const { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure } = tracks.actions;
 
 export type FetchTrackEpicAction =

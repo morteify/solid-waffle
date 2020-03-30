@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Track } from '../../redux/features/tracks';
 import { useHistory } from 'react-router-dom';
 import { Howl, Howler } from 'howler';
-import { useDispatch } from 'react-redux';
-import { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure } from '../../redux/features/tracks';
+import { useDispatch, useSelector } from 'react-redux';
+import { createSelector } from '@reduxjs/toolkit';
+import { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure, TracksType } from '../../redux/features/tracks';
+import { RootReducer } from '../../redux/features/root';
 
 function createSound(...urls: Array<string>): Howl {
   const sound = new Howl({
@@ -23,16 +25,17 @@ function createSound(...urls: Array<string>): Howl {
   return sound;
 }
 
+const selectTracksList = createSelector(
+  (state: RootReducer) => state.tracks.tracks,
+  (tracks) => tracks,
+);
+
 function TracksView(): JSX.Element {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const [tracks, setTracks] = useState<Array<Partial<Track>> | null>(null);
+  const tracks = useSelector(selectTracksList);
+
   useEffect(() => {
     dispatch(fetchTracksStart());
-
-    // fetch('https://funkwhale.it/api/v1/tracks')
-    //   .then((response) => response.json())
-    //   .then((result) => setTracks(result.results));
   }, []);
 
   return (
