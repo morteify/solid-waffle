@@ -1,8 +1,11 @@
 import { configureStore, getDefaultMiddleware, AnyAction } from '@reduxjs/toolkit';
 import { rootReducer, rootEpic, RootReducerType as RootReducer } from './features/root';
+import { FetchTrackEpicAction } from './features/tracks';
 import { createEpicMiddleware } from 'redux-observable';
 
-const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, RootReducer>();
+type EpicMiddlewareRoot = FetchTrackEpicAction;
+
+const epicMiddleware = createEpicMiddleware<EpicMiddlewareRoot, EpicMiddlewareRoot, RootReducer>();
 
 const store = configureStore({
   reducer: rootReducer,
