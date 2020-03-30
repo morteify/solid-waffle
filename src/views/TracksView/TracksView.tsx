@@ -19,7 +19,7 @@ function createSound(...urls: Array<string>): Howl {
      */
     html5: true,
     onend: (): void => {
-      console.log('Finished!');
+      console.log('Finished playing!');
     },
   });
   return sound;

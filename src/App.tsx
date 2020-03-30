@@ -3,12 +3,14 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import './App.css';
 import SideMenu from './components/SideMenu/SideMenu';
 import Tracks from './views/TracksView/TracksView';
+import MusicPlayer from './components/MusicPlayer/MusicPlayer';
 
 function App(): JSX.Element {
   return (
     <Router>
       <div className="App">
         <SideMenu />
+        <MusicPlayer />
         <Switch>
           <Redirect exact from="/" to="/home" />
 
