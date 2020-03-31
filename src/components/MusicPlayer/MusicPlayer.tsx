@@ -4,22 +4,47 @@ import { useHistory } from 'react-router-dom';
 import { Howl, Howler } from 'howler';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure, TracksType } from '../../redux/features/tracks';
+import { playMusicRequest, pauseMusic } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
+import useMusicPlayer from '../../hooks/useMusicPlayer';
 
 interface MusicPlayer {
   soundName?: string;
 }
 
-function MusicPlayer({ soundName }: MusicPlayer): JSX.Element {
+function MusicPlayer(): JSX.Element {
+  const dispatch = useDispatch();
+  const currentSoundName = useSelector((state: RootReducer) => state.musicPlayer.soundName);
+  const currentSoundURL = useSelector((state: RootReducer) => state.musicPlayer.soundURL);
+  const shouldSoundPlay = useSelector((state: RootReducer) => state.musicPlayer.isPlaying);
+  const howlerSound = useMusicPlayer({ songURL: currentSoundURL });
+  howlerSound.play();
   return (
     <div>
       <div>Music Player</div>
       <div style={{ width: '100px', height: '100px', backgroundColor: 'beige' }}>
-        {soundName ? soundName : 'Song title'}
+        {currentSoundName ? currentSoundName : 'Song title'}
       </div>
-      <div style={{ width: '100px', height: '100px', backgroundColor: 'green' }}>Play</div>
-      <div style={{ width: '100px', height: '100px', backgroundColor: 'red' }}>Pause</div>
+      <div
+        style={{ width: '100px', height: '100px', backgroundColor: 'green' }}
+        onClick={(event) => {
+          if (shouldSoundPlay) {
+            console.log('should play');
+          }
+          howlerSound.play();
+        }}
+      >
+        Play
+      </div>
+      <div
+        style={{ width: '100px', height: '100px', backgroundColor: 'red' }}
+        onClick={(event) => {
+          howlerSound.pause();
+          dispatch(pauseMusic());
+        }}
+      >
+        Pause
+      </div>
     </div>
   );
 }

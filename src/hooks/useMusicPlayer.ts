@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Howl, Howler } from 'howler';
 
 function createSound(...urls: Array<string>): Howl {
@@ -23,9 +23,15 @@ interface MusicPlayer {
   songURL: string;
 }
 
-function useMusicPlayer({ songURL }: MusicPlayer) {
-  const [currentSongURL, setCurrentSongURL] = useState<string | null>(songURL);
-  const [howlerSound, setHowlerSound] = useState<Howl | null>(createSound(currentSongURL as string));
+function useMusicPlayer({ songURL }: MusicPlayer): Howl {
+  const [currentSongURL, setCurrentSongURL] = useState<string | null>('');
+  console.log('howler', currentSongURL);
+  useEffect(() => {
+    setCurrentSongURL(songURL);
+  }, [songURL]);
+
+  const sound = createSound(currentSongURL as string);
+  return sound;
 }
 
 export default useMusicPlayer;

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, AnyAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ajax } from 'rxjs/ajax';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
@@ -17,13 +17,13 @@ interface TracksApiResponse {
 
 interface TracksState {
   tracks: Array<Track>;
-  loading: boolean;
+  isLoading: boolean;
   error: string | null;
 }
 
 const initialState: TracksState = {
   tracks: [],
-  loading: false,
+  isLoading: false,
   error: null,
 };
 
@@ -32,16 +32,16 @@ const tracks = createSlice({
   initialState,
   reducers: {
     fetchTracksStart(state): void {
-      state.loading = true;
+      state.isLoading = true;
       state.error = null;
     },
     fetchTracksSuccess(state, action: PayloadAction<TracksApiResponse>): void {
       state.tracks = action.payload.results;
-      state.loading = false;
+      state.isLoading = false;
       state.error = null;
     },
     fetchTracksFailure(state, action: PayloadAction<string>): void {
-      state.loading = false;
+      state.isLoading = false;
       state.error = action.payload;
     },
   },
