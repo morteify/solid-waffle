@@ -1,12 +1,32 @@
-import React from "react";
-import "./App.css";
-import LayoutWrapper from "./components/LayoutWrapper/LayoutWrapper";
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import './App.css';
+import SideMenu from './components/SideMenu/SideMenu';
+import Tracks from './views/TracksView/TracksView';
+import MusicPlayer from './components/MusicPlayer/MusicPlayer';
 
-function App() {
+function App(): JSX.Element {
   return (
-    <div className="App">
-      <LayoutWrapper />
-    </div>
+    <Router>
+      <div className="App">
+        <SideMenu />
+        <MusicPlayer />
+        <Switch>
+          <Redirect exact from="/" to="/home" />
+
+          <Route path="/home">
+            <div>home</div>
+          </Route>
+          <Route path="/songs" component={Tracks} />
+          <Route path="/albums">
+            <div>albums</div>
+          </Route>
+          <Route path="/artists">
+            <div>artists</div>
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
