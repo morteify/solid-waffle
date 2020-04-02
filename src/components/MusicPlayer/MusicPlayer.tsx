@@ -7,6 +7,18 @@ import { createSelector } from '@reduxjs/toolkit';
 import { playMusicRequest, pauseMusic } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
 import useMusicPlayer from '../../hooks/useMusicPlayer';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  height: 4rem;
+  width: 100vw;
+  position: fixed;
+  z-index: 2;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: coral;
+`;
 
 interface MusicPlayer {
   soundName?: string;
@@ -20,8 +32,7 @@ function MusicPlayer(): JSX.Element {
   const howlerSound = useMusicPlayer({ songURL: currentSoundURL });
   howlerSound.play();
   return (
-    <div>
-      <div>Music Player</div>
+    <Container>
       <div style={{ width: '100px', height: '100px', backgroundColor: 'beige' }}>
         {currentSoundName ? currentSoundName : 'Song title'}
       </div>
@@ -45,7 +56,7 @@ function MusicPlayer(): JSX.Element {
       >
         Pause
       </div>
-    </div>
+    </Container>
   );
 }
 
