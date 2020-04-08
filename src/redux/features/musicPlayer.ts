@@ -26,17 +26,22 @@ const musicPlayer = createSlice({
   name: 'musicPlayer',
   initialState,
   reducers: {
-    playMusicRequest(state, action: PayloadAction<any>): void {
-      state.soundURL = action.payload.soundURL;
-      state.soundName = action.payload.soundName;
+    loadMusic(state, action: PayloadAction<any>): void {
+      state.soundName = action?.payload?.soundName;
+      state.soundURL = action?.payload?.soundURL;
+      state.isPaused = false;
       state.isPlaying = false;
-      state.isPaused = false;
-      state.isLoading = true;
-      state.error = null;
     },
-    playMusicSuccess(state): void {
-      state.isPlaying = true;
+    playMusic(state): void {
       state.isPaused = false;
+      state.isPlaying = true;
+      state.error = null;
+      state.isLoading = false;
+    },
+    pauseMusic(state): void {
+      state.isPlaying = false;
+      state.isPaused = true;
+      state.error = null;
       state.isLoading = false;
     },
     playMusicFailure(state, action: PayloadAction<string>): void {
@@ -45,15 +50,9 @@ const musicPlayer = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    pauseMusic(state): void {
-      state.isPlaying = false;
-      state.isPaused = true;
-      state.error = null;
-      state.isLoading = false;
-    },
   },
 });
 
-export const { playMusicRequest, playMusicFailure, playMusicSuccess, pauseMusic } = musicPlayer.actions;
+export const { playMusicFailure, pauseMusic, playMusic, loadMusic } = musicPlayer.actions;
 
 export default musicPlayer.reducer;

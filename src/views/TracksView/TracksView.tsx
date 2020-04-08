@@ -5,7 +5,7 @@ import { Howl, Howler } from 'howler';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure, TracksType } from '../../redux/features/tracks';
-import { playMusicRequest } from '../../redux/features/musicPlayer';
+import { loadMusic } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
 import { List, message, Avatar, Spin } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -52,13 +52,13 @@ function TracksView(): JSX.Element {
           renderItem={(track: Track): JSX.Element => (
             <List.Item key={track.title}>
               <List.Item.Meta
-                // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                //avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
                 title={
                   <TrackName
                     onClick={(): void => {
                       dispatch(
-                        playMusicRequest({
-                          soundURL: 'https://funkwhale.it' + track.listen_url,
+                        loadMusic({
+                          soundURL: 'https://open.audio' + track.listen_url,
                           soundName: track.title,
                         }),
                       );

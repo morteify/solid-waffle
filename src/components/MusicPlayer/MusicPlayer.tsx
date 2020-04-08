@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Howl, Howler } from 'howler';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { playMusicRequest, pauseMusic } from '../../redux/features/musicPlayer';
+import { pauseMusic, playMusic } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
 import useMusicPlayer from '../../hooks/useMusicPlayer';
 import styled from 'styled-components';
@@ -27,10 +27,7 @@ interface MusicPlayer {
 function MusicPlayer(): JSX.Element {
   const dispatch = useDispatch();
   const currentSoundName = useSelector((state: RootReducer) => state.musicPlayer.soundName);
-  const currentSoundURL = useSelector((state: RootReducer) => state.musicPlayer.soundURL);
-  const shouldSoundPlay = useSelector((state: RootReducer) => state.musicPlayer.isPlaying);
-  const howlerSound = useMusicPlayer({ songURL: currentSoundURL });
-  howlerSound.play();
+  const [howlerSound, volume, setVolume, toggleSoundMute] = useMusicPlayer();
   return (
     <Container>
       <div style={{ width: '100px', height: '100px', backgroundColor: 'beige' }}>
@@ -38,23 +35,35 @@ function MusicPlayer(): JSX.Element {
       </div>
       <div
         style={{ width: '100px', height: '100px', backgroundColor: 'green' }}
-        onClick={(event) => {
-          if (shouldSoundPlay) {
-            console.log('should play');
-          }
-          howlerSound.play();
+        onClick={(): void => {
+          dispatch(playMusic());
         }}
       >
         Play
       </div>
       <div
         style={{ width: '100px', height: '100px', backgroundColor: 'red' }}
-        onClick={(event) => {
-          howlerSound.pause();
+        onClick={(): void => {
           dispatch(pauseMusic());
         }}
       >
         Pause
+      </div>
+      <div
+        style={{ width: '100px', height: '100px', backgroundColor: 'pink' }}
+        onClick={(): void => {
+          toggleSoundMute();
+        }}
+      >
+        Mute
+      </div>
+      <div
+        style={{ width: '100px', height: '100px', backgroundColor: 'blue' }}
+        onClick={(): void => {
+          setVolume(Math.random());
+        }}
+      >
+        Volume: {volume}
       </div>
     </Container>
   );
