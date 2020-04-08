@@ -49,7 +49,7 @@ function TracksView(): JSX.Element {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <CustomList
           dataSource={tracks}
-          renderItem={(track: Track): JSX.Element => (
+          renderItem={(track: any): JSX.Element => (
             <List.Item key={track.title}>
               <List.Item.Meta
                 //avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
@@ -69,7 +69,8 @@ function TracksView(): JSX.Element {
                 }
                 description={track.listen_url}
               />
-              <div>Content</div>
+
+              <img src={track?.album?.cover?.medium_square_crop} alt="cover" />
             </List.Item>
           )}
         >
