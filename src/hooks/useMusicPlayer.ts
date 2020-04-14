@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Howl, Howler } from 'howler';
 import { RootReducer } from '../redux/features/root';
 import { useDispatch } from 'react-redux';
-import { pauseMusic, playMusic } from '../redux/features/musicPlayer';
+import { pauseMusic, playMusic, playMusicFailure } from '../redux/features/musicPlayer';
 
 interface MusicPlayer {
   songURL: string;
@@ -37,14 +37,17 @@ function useMusicPlayer(): [Howl, number, (arg0: number) => void, () => void] {
     const sound = new Howl({
       src: [...urls],
       format: ['mp3', 'aac', 'flac', 'oog'],
-      volume: volume,
       html5: true,
+      volume: volume,
       mute: mute,
       onload: (): void => {
-        console.log('loaded!!');
+        dispatch(playMusic());
       },
-      onend: (): void => {
-        console.log('Finished playing!');
+      onloaderror: (id, error): void => {
+        dispatch(playMusicFailure(error));
+      },
+      onplayerror: (id, error): void => {
+        dispatch(playMusicFailure(error));
       },
     });
     return sound;

@@ -7,7 +7,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure, TracksType } from '../../redux/features/tracks';
 import { loadMusic } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
-import { List, message, Avatar, Spin } from 'antd';
+import { List, message, Avatar, Spin, PageHeader } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import styled from 'styled-components';
@@ -47,12 +47,18 @@ function TracksView(): JSX.Element {
   return (
     <Container>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <PageHeader
+          className="site-page-header"
+          onBack={(): null => null}
+          title="Songs"
+          subTitle="All tracks on the instance"
+        />
         <CustomList
           dataSource={tracks}
           renderItem={(track: any): JSX.Element => (
             <List.Item key={track.title}>
               <List.Item.Meta
-                //avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                avatar={<Avatar shape="square" size="large" src={track?.album?.cover?.small_square_crop} />}
                 title={
                   <TrackName
                     onClick={(): void => {
@@ -60,6 +66,7 @@ function TracksView(): JSX.Element {
                         loadMusic({
                           soundURL: 'https://open.audio' + track.listen_url,
                           soundName: track.title,
+                          albumCover: track?.album?.cover?.small_square_crop || null,
                         }),
                       );
                     }}
@@ -69,8 +76,6 @@ function TracksView(): JSX.Element {
                 }
                 description={track.listen_url}
               />
-
-              <img src={track?.album?.cover?.medium_square_crop} alt="cover" />
             </List.Item>
           )}
         >

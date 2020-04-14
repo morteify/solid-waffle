@@ -8,6 +8,7 @@ interface MusicPlayer {
   isPlaying: boolean;
   soundName: string;
   soundURL: string;
+  albumCover: string;
   isPaused: boolean;
   isLoading: boolean;
   error: string | null;
@@ -16,6 +17,7 @@ interface MusicPlayer {
 const initialState: MusicPlayer = {
   soundName: '',
   soundURL: '',
+  albumCover: '',
   isPlaying: false,
   isPaused: false,
   isLoading: false,
@@ -26,11 +28,11 @@ const musicPlayer = createSlice({
   name: 'musicPlayer',
   initialState,
   reducers: {
-    loadMusic(state, action: PayloadAction<any>): void {
+    loadMusic(state, action: PayloadAction<{ soundName: string; soundURL: string; albumCover: string | null }>): void {
       state.soundName = action?.payload?.soundName;
       state.soundURL = action?.payload?.soundURL;
-      state.isPaused = false;
-      state.isPlaying = false;
+      state.albumCover = action?.payload?.albumCover as string;
+      state.isLoading = true;
     },
     playMusic(state): void {
       state.isPaused = false;
@@ -41,7 +43,6 @@ const musicPlayer = createSlice({
     pauseMusic(state): void {
       state.isPlaying = false;
       state.isPaused = true;
-      state.error = null;
       state.isLoading = false;
     },
     playMusicFailure(state, action: PayloadAction<string>): void {

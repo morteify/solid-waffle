@@ -13,7 +13,6 @@ function App(): JSX.Element {
         <MusicPlayer />
         <Switch>
           <Redirect exact from="/" to="/home" />
-
           <Route path="/home">
             <div>home</div>
           </Route>
