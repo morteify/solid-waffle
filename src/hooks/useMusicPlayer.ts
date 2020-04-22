@@ -14,6 +14,7 @@ function useMusicPlayer(): [
   number,
   number,
   (arg0: number) => void,
+  boolean,
   () => void,
   number,
   (arg0: number) => void,
@@ -33,18 +34,13 @@ function useMusicPlayer(): [
 
   const handleCurrentSoundPosition = (value: number): void => {
     // (sound as any)._sounds[0]._seek
-    console.log('value', value);
-    console.log('value but current', currentSoundPosition);
     sound?.seek(value, soundID);
     setCurrentSoundPosition(value);
-    console.log('value but current 2', currentSoundPosition);
   };
 
   const runTimer = (): void => {
     timer = setInterval(() => {
-      console.log('ehh', currentSoundPosition);
       setCurrentSoundPosition((value: number | undefined) => (value as number) + 1);
-      console.log('ehh 2', currentSoundPosition);
     }, 1000);
   };
 
@@ -81,11 +77,9 @@ function useMusicPlayer(): [
         dispatch(playMusicFailure(error));
       },
       onplay: (id): void => {
-        console.log('run timer');
         runTimer();
       },
       onpause: (id): void => {
-        console.log('stopped timer');
         stopTimer();
       },
       onplayerror: (id, error): void => {
@@ -112,15 +106,10 @@ function useMusicPlayer(): [
   }, []);
 
   useEffect(() => {
-    console.log('eooo');
     const time = Number(sound?.seek(soundID)) || 0;
     setCurrentSoundPosition(time);
     setSongDuration(sound?.duration(soundID));
   }, [sound, soundID]);
-
-  useEffect(() => {
-    console.log('changed', currentSoundPosition);
-  }, [currentSoundPosition]);
 
   useEffect(() => {
     setSongDuration(sound?.duration(soundID) as number);
@@ -145,6 +134,7 @@ function useMusicPlayer(): [
     soundID as number,
     volume,
     handleVolume,
+    mute,
     toggleSoundMute,
     currentSoundPosition as number,
     handleCurrentSoundPosition,

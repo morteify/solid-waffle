@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 interface MusicPlayer {
   isPlaying: boolean;
   soundName: string;
+  artistName: string;
   soundURL: string;
   albumCover: string;
   isPaused: boolean;
@@ -16,6 +17,7 @@ interface MusicPlayer {
 
 const initialState: MusicPlayer = {
   soundName: '',
+  artistName: '',
   soundURL: '',
   albumCover: '',
   isPlaying: false,
@@ -28,9 +30,13 @@ const musicPlayer = createSlice({
   name: 'musicPlayer',
   initialState,
   reducers: {
-    loadMusic(state, action: PayloadAction<{ soundName: string; soundURL: string; albumCover: string | null }>): void {
+    loadMusic(
+      state,
+      action: PayloadAction<{ artistName: string; soundName: string; soundURL: string; albumCover: string | null }>,
+    ): void {
       state.soundName = action?.payload?.soundName;
       state.soundURL = action?.payload?.soundURL;
+      state.artistName = action?.payload?.artistName;
       state.albumCover = action?.payload?.albumCover as string;
       state.isLoading = true;
     },

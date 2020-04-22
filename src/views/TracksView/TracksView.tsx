@@ -64,7 +64,8 @@ function TracksView(): JSX.Element {
                     onClick={(): void => {
                       dispatch(
                         loadMusic({
-                          soundURL: 'https://open.audio' + track.listen_url,
+                          artistName: track.artist.name,
+                          soundURL: 'https://funkwhale.net' + track.listen_url,
                           soundName: track.title,
                           albumCover: track?.album?.cover?.small_square_crop || null,
                         }),
