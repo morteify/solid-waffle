@@ -60,7 +60,7 @@ export const fetchTracksEpic: Epic<FetchTrackEpicAction, FetchTrackEpicAction> =
   action$.pipe(
     ofType(fetchTracksStart.type),
     mergeMap((action) =>
-      ajax.getJSON('https://funkwhale.it/api/v1/tracks').pipe(
+      ajax.getJSON('https://funkwhale.net/api/v1/tracks').pipe(
         map((response) => fetchTracksSuccess(response as TracksApiResponse)),
         catchError((error) => of(fetchTracksFailure(JSON.stringify(error)))),
       ),

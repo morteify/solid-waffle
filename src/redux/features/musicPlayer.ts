@@ -7,7 +7,9 @@ import { of } from 'rxjs';
 interface MusicPlayer {
   isPlaying: boolean;
   soundName: string;
+  artistName: string;
   soundURL: string;
+  albumCover: string;
   isPaused: boolean;
   isLoading: boolean;
   error: string | null;
@@ -15,7 +17,9 @@ interface MusicPlayer {
 
 const initialState: MusicPlayer = {
   soundName: '',
+  artistName: '',
   soundURL: '',
+  albumCover: '',
   isPlaying: false,
   isPaused: false,
   isLoading: false,
@@ -26,17 +30,25 @@ const musicPlayer = createSlice({
   name: 'musicPlayer',
   initialState,
   reducers: {
-    playMusicRequest(state, action: PayloadAction<any>): void {
-      state.soundURL = action.payload.soundURL;
-      state.soundName = action.payload.soundName;
-      state.isPlaying = false;
-      state.isPaused = false;
+    loadMusic(
+      state,
+      action: PayloadAction<{ artistName: string; soundName: string; soundURL: string; albumCover: string | null }>,
+    ): void {
+      state.soundName = action?.payload?.soundName;
+      state.soundURL = action?.payload?.soundURL;
+      state.artistName = action?.payload?.artistName;
+      state.albumCover = action?.payload?.albumCover as string;
       state.isLoading = true;
-      state.error = null;
     },
-    playMusicSuccess(state): void {
-      state.isPlaying = true;
+    playMusic(state): void {
       state.isPaused = false;
+      state.isPlaying = true;
+      state.error = null;
+      state.isLoading = false;
+    },
+    pauseMusic(state): void {
+      state.isPlaying = false;
+      state.isPaused = true;
       state.isLoading = false;
     },
     playMusicFailure(state, action: PayloadAction<string>): void {
@@ -45,15 +57,9 @@ const musicPlayer = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    pauseMusic(state): void {
-      state.isPlaying = false;
-      state.isPaused = true;
-      state.error = null;
-      state.isLoading = false;
-    },
   },
 });
 
-export const { playMusicRequest, playMusicFailure, playMusicSuccess, pauseMusic } = musicPlayer.actions;
+export const { playMusicFailure, pauseMusic, playMusic, loadMusic } = musicPlayer.actions;
 
 export default musicPlayer.reducer;
