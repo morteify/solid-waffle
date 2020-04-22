@@ -12,10 +12,10 @@ function App(): JSX.Element {
         <SideMenu />
         <MusicPlayer />
         <Switch>
-          <Redirect exact from="/" to="/home" />
-          <Route path="/home">
+          <Redirect exact from="/" to="/songs" />
+          {/* <Route path="/home">
             <div>home</div>
-          </Route>
+          </Route> */}
           <Route path="/songs" component={Tracks} />
           <Route path="/albums">
             <div>albums</div>

@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Track } from '../../redux/features/tracks';
-import { useHistory } from 'react-router-dom';
-import { Howl, Howler } from 'howler';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import { pauseMusic, playMusic } from '../../redux/features/musicPlayer';
@@ -18,9 +15,10 @@ import {
   PauseCircleOutlined,
   AudioMutedOutlined,
 } from '@ant-design/icons';
+import moment from 'moment';
 
 const Container = styled.div`
-  height: 5rem;
+  height: 80px;
   width: 100vw;
   position: fixed;
   z-index: 2;
@@ -197,8 +195,7 @@ function MusicPlayer(): JSX.Element {
               {!isSongLoaded ? <LoadingIndicator /> : isSongPlaying ? <PauseButton /> : <PlayButton />}
             </PlayButtonContainer>
             <SliderContainer>
-              <div>{currentSoundPosition}</div>
-
+              <div>{moment.utc(moment.duration(currentSoundPosition, 'seconds').asMilliseconds()).format('mm:ss')}</div>
               <SoundProgress
                 defaultValue={1}
                 min={0}
@@ -208,8 +205,7 @@ function MusicPlayer(): JSX.Element {
                 value={currentSoundPosition}
                 onChange={(value: number | [number, number]): void => handleCurrentSoundPosition(value as number)}
               />
-
-              <div>{songDuration && songDuration}</div>
+              <div>{moment.utc(moment.duration(songDuration, 'seconds').asMilliseconds()).format('mm:ss')}</div>
             </SliderContainer>
           </PlaybackControl>
         </Col>

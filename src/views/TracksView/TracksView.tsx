@@ -27,8 +27,9 @@ const TrackName = styled.p`
 `;
 
 const CustomList = styled(List)`
-  height: calc(100vh - 64px);
+  height: calc(100vh - 100px);
   overflow: auto;
+  padding: 1.5rem;
 `;
 
 const selectTracksList = createSelector(
@@ -75,17 +76,11 @@ function TracksView(): JSX.Element {
                     {track.title}
                   </TrackName>
                 }
-                description={track.listen_url}
+                description={track.artist.name}
               />
             </List.Item>
           )}
-        >
-          {/* {this.state.loading && this.state.hasMore && (
-            <div className="demo-loading-container">
-              <Spin />
-            </div>
-          )} */}
-        </CustomList>
+        ></CustomList>
       </div>
     </Container>
   );

@@ -14,12 +14,12 @@ function SideMenu() {
     <Menu
       onClick={handleClick}
       style={{ width: 256, height: '100vh' }}
-      defaultSelectedKeys={['home']}
+      defaultSelectedKeys={['songs']}
       defaultOpenKeys={['sub1']}
       mode="inline"
     >
       <Menu.ItemGroup key="g1" title="Browse Music">
-        <Menu.Item key="home">Home</Menu.Item>
+        {/* <Menu.Item key="home">Home</Menu.Item> */}
         <Menu.Item key="songs">Songs</Menu.Item>
         <Menu.Item key="albums">Albums</Menu.Item>
         <Menu.Item key="artists">Artists</Menu.Item>
