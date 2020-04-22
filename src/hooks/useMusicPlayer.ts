@@ -85,6 +85,12 @@ function useMusicPlayer(): [
       onplayerror: (id, error): void => {
         dispatch(playMusicFailure(error));
       },
+      onend: (id): void => {
+        stopTimer();
+      },
+      onseek: (id): void => {
+        // stopTimer();
+      },
     });
     return sound;
   };
