@@ -191,8 +191,14 @@ function MusicPlayer(): JSX.Element {
         </Col>
         <Col span={10}>
           <PlaybackControl>
-            <PlayButtonContainer onClick={handlePlayButton}>
-              {!isSongLoaded ? <LoadingIndicator /> : isSongPlaying ? <PauseButton /> : <PlayButton />}
+            <PlayButtonContainer>
+              {!isSongLoaded ? (
+                <LoadingIndicator />
+              ) : isSongPlaying ? (
+                <PauseButton onClick={handlePlayButton} />
+              ) : (
+                <PlayButton onClick={handlePlayButton} />
+              )}
             </PlayButtonContainer>
             <SliderContainer>
               <div>{moment.utc(moment.duration(currentSoundPosition, 'seconds').asMilliseconds()).format('mm:ss')}</div>
