@@ -3,11 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Howl, Howler } from 'howler';
 import { RootReducer } from '../redux/features/root';
 import { useDispatch } from 'react-redux';
-import { pauseMusic, playMusic, playMusicFailure } from '../redux/features/musicPlayer';
-
-interface MusicPlayer {
-  songURL: string;
-}
+import { pauseMusic, playMusic, playMusicFailure, stopMusic } from '../redux/features/musicPlayer';
 
 function useMusicPlayer(): [
   Howl,
@@ -27,22 +23,18 @@ function useMusicPlayer(): [
   const [soundID, setSoundID] = useState<number>();
   const [currentSoundPosition, setCurrentSoundPosition] = useState<number>();
   const [songDuration, setSongDuration] = useState<number>();
-  const isSoundPaused = useSelector((state: RootReducer) => state.musicPlayer.isPaused);
-  const isSoundPlaying = useSelector((state: RootReducer) => state.musicPlayer.isPlaying);
-  const soundURL = useSelector((state: RootReducer) => state.musicPlayer.soundURL);
+  // const isLoaded = useSelector((state: RootReducer) => !state.musicPlayer.isLoading);
+  // const shouldPauseSound = useSelector((state: RootReducer) => state.musicPlayer.isPaused);
+  // const shouldPlaySound = useSelector((state: RootReducer) => state.musicPlayer.isPlaying);
+  // const soundURL = useSelector((state: RootReducer) => state.musicPlayer.soundURL);
   let timer: number;
 
-  const handleCurrentSoundPosition = (value: number): void => {
-    // (sound as any)._sounds[0]._seek
-    sound?.seek(value, soundID);
-    setCurrentSoundPosition(value);
-  };
-
-  const runTimer = (): void => {
-    timer = setInterval(() => {
-      setCurrentSoundPosition((value: number | undefined) => (value as number) + 1);
-    }, 1000);
-  };
+  // const runTimer = (): void => {
+  //   timer = setInterval(() => {
+  //     const val = Math.round(sound?.seek(soundID) as number);
+  //     if (!Number.isNaN(val)) setCurrentSoundPosition(val);
+  //   }, 1000);
+  // };
 
   const stopTimer = (): void => {
     clearInterval(timer);
@@ -63,6 +55,18 @@ function useMusicPlayer(): [
     setVolume(value);
   };
 
+  const playSound = (): void => {
+    setSoundID(sound?.play());
+  };
+
+  const pauseSound = (): void => {
+    sound?.pause();
+  };
+
+  const stopSound = (): void => {
+    sound?.stop();
+  };
+
   const createSound = (...urls: Array<string>): Howl => {
     const sound = new Howl({
       src: [...urls],
@@ -77,49 +81,24 @@ function useMusicPlayer(): [
         dispatch(playMusicFailure(error));
       },
       onplay: (id): void => {
-        runTimer();
+        //runTimer();
       },
       onpause: (id): void => {
-        stopTimer();
+        clearInterval(timer);
       },
       onplayerror: (id, error): void => {
         dispatch(playMusicFailure(error));
       },
       onend: (id): void => {
-        stopTimer();
+        clearInterval(timer);
+        dispatch(stopMusic());
       },
       onseek: (id): void => {
-        // stopTimer();
+        //stopTimer();
       },
     });
     return sound;
   };
-
-  const playSound = (): void => {
-    setSoundID(sound?.play());
-  };
-
-  const pauseSound = (): void => {
-    sound?.pause();
-  };
-
-  const stopSound = (): void => {
-    sound?.stop();
-  };
-
-  useEffect(() => {
-    return (): void => stopTimer();
-  }, []);
-
-  useEffect(() => {
-    const time = Number(sound?.seek(soundID)) || 0;
-    setCurrentSoundPosition(time);
-    setSongDuration(sound?.duration(soundID));
-  }, [sound, soundID]);
-
-  useEffect(() => {
-    setSongDuration(sound?.duration(soundID) as number);
-  }, [sound]);
 
   useEffect(() => {
     stopSound();
@@ -127,13 +106,30 @@ function useMusicPlayer(): [
   }, [soundURL]);
 
   useEffect(() => {
-    if (isSoundPaused) {
+    timer = setInterval(() => {
+      const val = Math.round(sound?.seek(soundID) as number);
+      if (!Number.isNaN(val)) setCurrentSoundPosition(val);
+    }, 1000);
+  }, [sound?.seek(soundID)]);
+
+  useEffect(() => {
+    const time = Number(sound?.seek(soundID)) || 0;
+    setCurrentSoundPosition(time);
+    setSongDuration(sound?.duration(soundID));
+
+    return () => {
+      setCurrentSoundPosition(0);
+    };
+  }, [sound, soundID]);
+
+  useEffect(() => {
+    if (shouldPauseSound) {
       pauseSound();
     }
-    if (isSoundPlaying) {
+    if (shouldPlaySound) {
       playSound();
     }
-  }, [isSoundPaused, isSoundPlaying]);
+  }, [shouldPauseSound, shouldPlaySound]);
 
   return [
     sound as Howl,
@@ -143,7 +139,7 @@ function useMusicPlayer(): [
     mute,
     toggleSoundMute,
     currentSoundPosition as number,
-    handleCurrentSoundPosition,
+    setCurrentSoundPosition,
     songDuration as number,
   ];
 }

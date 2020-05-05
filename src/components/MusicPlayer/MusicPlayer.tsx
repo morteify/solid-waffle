@@ -163,7 +163,7 @@ function MusicPlayer(): JSX.Element {
     isMuted,
     toggleSoundMute,
     currentSoundPosition,
-    handleCurrentSoundPosition,
+    setCurrentSoundPosition,
     songDuration,
   ] = useMusicPlayer();
   console.log('current', currentSoundPosition);
@@ -172,6 +172,8 @@ function MusicPlayer(): JSX.Element {
     if (isSongLoaded) {
       if (isSongPlaying) dispatch(pauseMusic());
       else dispatch(playMusic());
+    } else {
+      console.log('song not loaded');
     }
   };
 
@@ -209,7 +211,7 @@ function MusicPlayer(): JSX.Element {
                 max={songDuration}
                 step={1}
                 value={currentSoundPosition}
-                onChange={(value: number | [number, number]): void => handleCurrentSoundPosition(value as number)}
+                onChange={(value: number | [number, number]): void => setCurrentSoundPosition(value as number)}
               />
               <div>{moment.utc(moment.duration(songDuration, 'seconds').asMilliseconds()).format('mm:ss')}</div>
             </SliderContainer>

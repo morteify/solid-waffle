@@ -12,6 +12,7 @@ interface MusicPlayer {
   albumCover: string;
   isPaused: boolean;
   isLoading: boolean;
+  isStopped: boolean;
   error: string | null;
 }
 
@@ -23,6 +24,7 @@ const initialState: MusicPlayer = {
   isPlaying: false,
   isPaused: false,
   isLoading: false,
+  isStopped: false,
   error: null,
 };
 
@@ -39,27 +41,38 @@ const musicPlayer = createSlice({
       state.artistName = action?.payload?.artistName;
       state.albumCover = action?.payload?.albumCover as string;
       state.isLoading = true;
+      state.isStopped = false;
     },
     playMusic(state): void {
       state.isPaused = false;
       state.isPlaying = true;
       state.error = null;
       state.isLoading = false;
+      state.isStopped = false;
     },
     pauseMusic(state): void {
       state.isPlaying = false;
       state.isPaused = true;
+      state.error = null;
       state.isLoading = false;
+      state.isStopped = false;
+    },
+    stopMusic(state): void {
+      state.isPlaying = false;
+      state.isPaused = false;
+      state.isLoading = false;
+      state.isStopped = true;
     },
     playMusicFailure(state, action: PayloadAction<string>): void {
       state.isPlaying = false;
       state.isPaused = false;
       state.isLoading = false;
+      state.isStopped = true;
       state.error = action.payload;
     },
   },
 });
 
-export const { playMusicFailure, pauseMusic, playMusic, loadMusic } = musicPlayer.actions;
+export const { playMusicFailure, pauseMusic, playMusic, stopMusic, loadMusic } = musicPlayer.actions;
 
 export default musicPlayer.reducer;

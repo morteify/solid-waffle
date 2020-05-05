@@ -66,7 +66,7 @@ function TracksView(): JSX.Element {
                       dispatch(
                         loadMusic({
                           artistName: track.artist.name,
-                          soundURL: 'https://funkwhale.net' + track.listen_url,
+                          soundURL: 'https://audio.liberta.vip' + track.listen_url,
                           soundName: track.title,
                           albumCover: track?.album?.cover?.small_square_crop || null,
                         }),
