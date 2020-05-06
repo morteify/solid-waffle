@@ -150,31 +150,42 @@ interface MusicPlayer {
 
 function MusicPlayer(): JSX.Element {
   const dispatch = useDispatch();
+  const soundURL = useSelector((state: RootReducer) => state.musicPlayer.soundURL);
   const currentSoundName = useSelector((state: RootReducer) => state.musicPlayer.soundName);
   const currentArtistName = useSelector((state: RootReducer) => state.musicPlayer.artistName);
   const currentSongCover = useSelector((state: RootReducer) => state.musicPlayer.albumCover);
-  const isSongLoaded = useSelector((state: RootReducer) => !state.musicPlayer.isLoading);
-  const isSongPlaying = useSelector((state: RootReducer) => state.musicPlayer.isPlaying);
-  const [
-    howlerSound,
+  const [timer, setTimer] = useState(0);
+  const {
+    sound,
     soundID,
-    volume,
+    isSoundPlaying,
+    playSound,
+    pauseSound,
+    getVolume,
     setVolume,
     isMuted,
     toggleSoundMute,
+    getSoundDuration,
     currentSoundPosition,
     setCurrentSoundPosition,
-    songDuration,
-  ] = useMusicPlayer();
-  console.log('current', currentSoundPosition);
+  } = useMusicPlayer({ soundURL });
 
-  const handlePlayButton = (): void => {
-    if (isSongLoaded) {
-      if (isSongPlaying) dispatch(pauseMusic());
-      else dispatch(playMusic());
-    } else {
-      console.log('song not loaded');
-    }
+  useEffect(() => {
+    if (isSoundPlaying) handleCurrentSoundPosition();
+    else clearInterval(timer);
+  }, [isSoundPlaying]);
+
+  useEffect(() => {
+    console.log('currentSoundPosition', currentSoundPosition);
+  }, [currentSoundPosition]);
+
+  const handleCurrentSoundPosition = (): void => {
+    setTimer(
+      setInterval(() => {
+        const val = Math.round(sound?.seek(soundID) as number);
+        if (!Number.isNaN(val)) setCurrentSoundPosition(val);
+      }, 500),
+    );
   };
 
   return (
@@ -193,7 +204,7 @@ function MusicPlayer(): JSX.Element {
         </Col>
         <Col span={10}>
           <PlaybackControl>
-            <PlayButtonContainer>
+            {/* <PlayButtonContainer>
               {!isSongLoaded ? (
                 <LoadingIndicator />
               ) : isSongPlaying ? (
@@ -201,32 +212,41 @@ function MusicPlayer(): JSX.Element {
               ) : (
                 <PlayButton onClick={handlePlayButton} />
               )}
+            </PlayButtonContainer> */}
+
+            <PlayButtonContainer>
+              {isSoundPlaying ? <PauseButton onClick={pauseSound} /> : <PlayButton onClick={playSound} />}
             </PlayButtonContainer>
+
             <SliderContainer>
               <div>{moment.utc(moment.duration(currentSoundPosition, 'seconds').asMilliseconds()).format('mm:ss')}</div>
               <SoundProgress
-                defaultValue={1}
+                defaultValue={0}
                 min={0}
                 tooltipVisible={false}
-                max={songDuration}
+                max={getSoundDuration()}
                 step={1}
                 value={currentSoundPosition}
                 onChange={(value: number | [number, number]): void => setCurrentSoundPosition(value as number)}
               />
-              <div>{moment.utc(moment.duration(songDuration, 'seconds').asMilliseconds()).format('mm:ss')}</div>
+              <div>{moment.utc(moment.duration(getSoundDuration(), 'seconds').asMilliseconds()).format('mm:ss')}</div>
             </SliderContainer>
           </PlaybackControl>
         </Col>
         <Col span={7}>
           <SoundVolumeControl>
-            {isMuted ? <MuteButton onClick={toggleSoundMute} /> : <SoundButton onClick={toggleSoundMute} />}
+            {isMuted || getVolume() === 0 ? (
+              <MuteButton onClick={toggleSoundMute} />
+            ) : (
+              <SoundButton onClick={toggleSoundMute} />
+            )}
             <VolumeSliderContainer>
               <Slider
                 defaultValue={0.5}
                 min={0}
                 max={1}
                 step={0.01}
-                value={volume}
+                value={getVolume()}
                 tipFormatter={(value) => Math.round(value * 100)}
                 onChange={(value: number | [number, number]): void => setVolume(value as number)}
               />
