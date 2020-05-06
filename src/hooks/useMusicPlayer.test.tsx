@@ -1,8 +1,6 @@
-import React from 'react';
-import { render, fireEvent, waitForElement } from '@testing-library/react';
 import { renderHook, act } from '@testing-library/react-hooks';
 import useMusicPlayer from './useMusicPlayer';
-import { Howl, Howler } from 'howler';
+import { Howl } from 'howler';
 
 const soundURL = 'https://funkwhale.com';
 const createSound = (...urls: Array<string>): Howl => {
