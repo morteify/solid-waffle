@@ -18,6 +18,7 @@ interface MusicPlayerHook {
   getSoundDuration: () => number;
   currentSoundPosition: number;
   setCurrentSoundPosition: (value: number) => void;
+  changeCurrentSoundPosition: (value: number) => void;
 }
 
 function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
@@ -84,8 +85,12 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   const setCurrentSoundPosition = (value: number): void => {
-    sound?.seek(value, soundID);
     setCurrentSoundPositionValue(value);
+  };
+
+  const changeCurrentSoundPosition = (value: number): void => {
+    setCurrentSoundPositionValue(value);
+    sound?.seek(value, soundID);
   };
 
   // TODO
@@ -106,6 +111,7 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
     getSoundDuration,
     currentSoundPosition: currentSoundPositionValue,
     setCurrentSoundPosition,
+    changeCurrentSoundPosition,
   };
 }
 

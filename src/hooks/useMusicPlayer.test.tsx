@@ -101,4 +101,13 @@ describe('MusicPlayer custom hook', () => {
     });
     expect(result.current.currentSoundPosition).toBe(3982173174);
   });
+
+  test("should change sound's current position", () => {
+    const { result } = renderHook(() => useMusicPlayer({ soundURL }));
+    const expected = 0;
+    act(() => {
+      result.current.changeCurrentSoundPosition(1212311111);
+    });
+    expect(result.current.currentSoundPosition).toBe(1212311111);
+  });
 });

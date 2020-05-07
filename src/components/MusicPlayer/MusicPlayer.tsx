@@ -168,6 +168,7 @@ function MusicPlayer(): JSX.Element {
     getSoundDuration,
     currentSoundPosition,
     setCurrentSoundPosition,
+    changeCurrentSoundPosition,
   } = useMusicPlayer({ soundURL });
 
   useEffect(() => {
@@ -227,7 +228,7 @@ function MusicPlayer(): JSX.Element {
                 max={getSoundDuration()}
                 step={1}
                 value={currentSoundPosition}
-                onChange={(value: number | [number, number]): void => setCurrentSoundPosition(value as number)}
+                onChange={(value: number | [number, number]): void => changeCurrentSoundPosition(value as number)}
               />
               <div>{moment.utc(moment.duration(getSoundDuration(), 'seconds').asMilliseconds()).format('mm:ss')}</div>
             </SliderContainer>
