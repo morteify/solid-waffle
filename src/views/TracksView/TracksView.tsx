@@ -48,12 +48,7 @@ function TracksView(): JSX.Element {
   return (
     <Container>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <PageHeader
-          className="site-page-header"
-          onBack={(): null => null}
-          title="Songs"
-          subTitle="All tracks on the instance"
-        />
+        <PageHeader className="site-page-header" title="Songs" subTitle="All tracks on the instance" />
         <CustomList
           dataSource={tracks}
           renderItem={(track: any): JSX.Element => (

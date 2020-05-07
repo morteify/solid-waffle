@@ -8,12 +8,14 @@ import styled from 'styled-components';
 import { Avatar } from 'antd';
 import { Slider, Row, Col, Button, Tooltip } from 'antd';
 import { Layout } from 'antd';
+import { useHistory } from 'react-router-dom';
 import {
   SoundOutlined,
   LoadingOutlined,
   PlayCircleOutlined,
   PauseCircleOutlined,
   AudioMutedOutlined,
+  UnorderedListOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -144,12 +146,24 @@ const MuteButton = styled(AudioMutedOutlined)`
   }
 `;
 
+const UnorderedListOutlinedButton = styled(UnorderedListOutlined)`
+  font-size: 20px;
+  color: #c0c0c0;
+  margin-right: 20px;
+  &:hover {
+    color: #d4d4d4;
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+`;
+
 interface MusicPlayer {
   soundName?: string;
 }
 
 function MusicPlayer(): JSX.Element {
   const dispatch = useDispatch();
+  const history = useHistory();
   const soundURL = useSelector((state: RootReducer) => state.musicPlayer.soundURL);
   const currentSoundName = useSelector((state: RootReducer) => state.musicPlayer.soundName);
   const currentArtistName = useSelector((state: RootReducer) => state.musicPlayer.artistName);
@@ -241,6 +255,7 @@ function MusicPlayer(): JSX.Element {
         </Col>
         <Col span={7}>
           <SoundVolumeControl>
+            <UnorderedListOutlinedButton onClick={() => history.push('/queue')} />
             {isMuted || getVolume() === 0 ? (
               <MuteButton onClick={toggleSoundMute} />
             ) : (
