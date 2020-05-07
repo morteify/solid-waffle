@@ -189,6 +189,11 @@ function MusicPlayer(): JSX.Element {
     );
   };
 
+  const handlePlayButton = () => {
+    if (isSoundPlaying) pauseSound();
+    else playSound();
+  };
+
   return (
     <Container>
       <Row>
@@ -216,7 +221,7 @@ function MusicPlayer(): JSX.Element {
             </PlayButtonContainer> */}
 
             <PlayButtonContainer>
-              {isSoundPlaying ? <PauseButton onClick={pauseSound} /> : <PlayButton onClick={playSound} />}
+              {isSoundPlaying ? <PauseButton onClick={handlePlayButton} /> : <PlayButton onClick={handlePlayButton} />}
             </PlayButtonContainer>
 
             <SliderContainer>

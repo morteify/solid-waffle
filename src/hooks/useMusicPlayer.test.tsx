@@ -21,6 +21,11 @@ const createSound = (...urls: Array<string>): Howl => {
   return sound;
 };
 
+beforeEach(() => {
+  // disables errors in console's output to make it more readable
+  console.error = jest.fn();
+});
+
 describe('MusicPlayer custom hook', () => {
   test('should create basic howler object', () => {
     const { result } = renderHook(() => useMusicPlayer({ soundURL }));

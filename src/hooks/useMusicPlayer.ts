@@ -24,7 +24,7 @@ interface MusicPlayerHook {
 function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   const [sound, setSound] = useState<Howl | null>();
   const [soundID, setSoundID] = useState<number>();
-  const [isSoundPlaying, setSoundPlaying] = useState(false);
+  const [isSoundPlaying, setIsSoundPlaying] = useState(false);
   const [volumeValue, setVolumeValue] = useState(0.5);
   const [isMuted, setIsMuted] = useState(false);
   const [currentSoundPositionValue, setCurrentSoundPositionValue] = useState(0);
@@ -41,13 +41,16 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
       onplay: (id): void => {},
       onpause: (id): void => {},
       onplayerror: (id, error): void => {},
-      onend: (id): void => {},
+      onend: (id): void => {
+        stopSound();
+      },
       onseek: (id): void => {},
     });
     return sound;
   };
 
   useEffect(() => {
+    stopSound();
     setSound(createSound(soundURL as string));
   }, [soundURL]);
 
@@ -71,13 +74,19 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   const playSound = (): void => {
-    setSoundPlaying(true);
+    setIsSoundPlaying(true);
     setSoundID(sound?.play());
   };
 
   const pauseSound = (): void => {
-    setSoundPlaying(false);
+    setIsSoundPlaying(false);
     sound?.pause();
+  };
+
+  const stopSound = (): void => {
+    setIsSoundPlaying(false);
+    setCurrentSoundPosition(0);
+    sound?.stop();
   };
 
   const getSoundDuration = (): number => {
@@ -91,11 +100,6 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   const changeCurrentSoundPosition = (value: number): void => {
     setCurrentSoundPositionValue(value);
     sound?.seek(value, soundID);
-  };
-
-  // TODO
-  const stopSound = (): void => {
-    sound?.stop();
   };
 
   return {
