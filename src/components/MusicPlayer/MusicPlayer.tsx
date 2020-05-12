@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { pauseMusic, playMusic } from '../../redux/features/musicPlayer';
+import { pauseMusic, playMusic, loadMusic } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
 import useMusicPlayer from '../../hooks/useMusicPlayer';
 import styled from 'styled-components';
@@ -164,11 +164,13 @@ interface MusicPlayer {
 function MusicPlayer(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
-  const soundURL = useSelector((state: RootReducer) => state.musicPlayer.soundURL);
-  const currentSoundName = useSelector((state: RootReducer) => state.musicPlayer.soundName);
-  const currentArtistName = useSelector((state: RootReducer) => state.musicPlayer.artistName);
-  const currentSongCover = useSelector((state: RootReducer) => state.musicPlayer.albumCover);
+  const soundURL = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.soundURL);
+  const currentSoundName = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.soundName);
+  const currentArtistName = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.artistName);
+  const currentSongCover = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.albumCover);
+  const musicQueue = useSelector((state: RootReducer) => state.musicPlayer.queue);
   const [timer, setTimer] = useState(0);
+
   const {
     sound,
     soundID,
@@ -190,9 +192,17 @@ function MusicPlayer(): JSX.Element {
     else clearInterval(timer);
   }, [isSoundPlaying]);
 
-  useEffect(() => {
-    console.log('currentSoundPosition', currentSoundPosition);
-  }, [currentSoundPosition]);
+  // useEffect(() => {
+  //   const currentTrack = musicQueue[0];
+  //   dispatch(
+  //     loadMusic({
+  //       artistName: (currentTrack as any)?.artist?.name,
+  //       soundURL: 'https://audio.liberta.vip' + (currentTrack as any)?.listen_url,
+  //       soundName: (currentTrack as any)?.title,
+  //       albumCover: (currentTrack as any)?.album?.cover?.small_square_crop || null,
+  //     }),
+  //   );
+  // }, [musicQueue]);
 
   const handleCurrentSoundPosition = (): void => {
     setTimer(

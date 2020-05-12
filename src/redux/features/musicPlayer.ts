@@ -5,22 +5,32 @@ import { ofType, Epic } from 'redux-observable';
 import { of } from 'rxjs';
 
 interface MusicPlayer {
+  queue: Array<SoundInfo>;
+  currentTrack: SoundInfo;
   isPlaying: boolean;
-  soundName: string;
-  artistName: string;
-  soundURL: string;
-  albumCover: string;
   isPaused: boolean;
   isLoading: boolean;
   isStopped: boolean;
   error: string | null;
 }
 
+export interface SoundInfo {
+  soundId: string | null;
+  soundName: string;
+  artistName: string;
+  soundURL: string;
+  albumCover: string;
+}
+
 const initialState: MusicPlayer = {
-  soundName: '',
-  artistName: '',
-  soundURL: '',
-  albumCover: '',
+  queue: [],
+  currentTrack: {
+    soundId: null,
+    soundName: '',
+    artistName: '',
+    soundURL: '',
+    albumCover: '',
+  },
   isPlaying: false,
   isPaused: false,
   isLoading: false,
@@ -36,10 +46,13 @@ const musicPlayer = createSlice({
       state,
       action: PayloadAction<{ artistName: string; soundName: string; soundURL: string; albumCover: string | null }>,
     ): void {
-      state.soundName = action?.payload?.soundName;
-      state.soundURL = action?.payload?.soundURL;
-      state.artistName = action?.payload?.artistName;
-      state.albumCover = action?.payload?.albumCover as string;
+      state.currentTrack = {
+        soundId: 'action?.payload?.soundId',
+        soundName: action?.payload?.soundName,
+        soundURL: action?.payload?.soundURL,
+        artistName: action?.payload?.artistName,
+        albumCover: action?.payload?.albumCover as string,
+      };
       state.isLoading = true;
       state.isStopped = false;
     },
@@ -70,9 +83,29 @@ const musicPlayer = createSlice({
       state.isStopped = true;
       state.error = action.payload;
     },
+    addMusicToQueue(state, action: PayloadAction<{ soundInfo: SoundInfo; position?: number }>): void {
+      if (action.payload.position) {
+        const currentState = state.queue;
+        currentState[action.payload.position] = action.payload.soundInfo;
+        state.queue = currentState;
+      } else {
+        state.queue = [...state.queue, action.payload.soundInfo];
+      }
+    },
+    removeMusicFromQueue(state, action: PayloadAction<string>): void {
+      state.queue = state.queue.filter((item: SoundInfo) => item.soundId !== action.payload);
+    },
   },
 });
 
-export const { playMusicFailure, pauseMusic, playMusic, stopMusic, loadMusic } = musicPlayer.actions;
+export const {
+  playMusicFailure,
+  pauseMusic,
+  playMusic,
+  stopMusic,
+  loadMusic,
+  addMusicToQueue,
+  removeMusicFromQueue,
+} = musicPlayer.actions;
 
 export default musicPlayer.reducer;
