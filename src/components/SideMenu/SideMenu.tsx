@@ -24,7 +24,7 @@ function SideMenu() {
         <Menu.Item key="albums">Albums</Menu.Item>
         <Menu.Item key="artists">Artists</Menu.Item>
       </Menu.ItemGroup>
-      <Menu.ItemGroup key="g2" title="Your Music">
+      {/* <Menu.ItemGroup key="g2" title="Your Music">
         <Menu.Item key="favourites">Favourites</Menu.Item>
         <Menu.Item key="history">History</Menu.Item>
       </Menu.ItemGroup>
@@ -33,7 +33,7 @@ function SideMenu() {
         <Menu.Item key="8">Playlist 2</Menu.Item>
         <Menu.Item key="9">Playlist 3</Menu.Item>
         <Menu.Item key="10">Playlist 4</Menu.Item>
-      </Menu.ItemGroup>
+      </Menu.ItemGroup> */}
     </Menu>
   );
 }

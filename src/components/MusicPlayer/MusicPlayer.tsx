@@ -185,6 +185,7 @@ function MusicPlayer(): JSX.Element {
     currentSoundPosition,
     setCurrentSoundPosition,
     changeCurrentSoundPosition,
+    isLoading,
   } = useMusicPlayer({ soundURL });
 
   useEffect(() => {
@@ -214,8 +215,11 @@ function MusicPlayer(): JSX.Element {
   };
 
   const handlePlayButton = () => {
-    if (isSoundPlaying) pauseSound();
-    else playSound();
+    if (isSoundPlaying) {
+      pauseSound();
+    } else {
+      playSound();
+    }
   };
 
   return (
@@ -234,18 +238,15 @@ function MusicPlayer(): JSX.Element {
         </Col>
         <Col span={10}>
           <PlaybackControl>
-            {/* <PlayButtonContainer>
-              {!isSongLoaded ? (
+            {console.log('isloading', isLoading)}
+            <PlayButtonContainer>
+              {isLoading ? (
                 <LoadingIndicator />
-              ) : isSongPlaying ? (
+              ) : isSoundPlaying ? (
                 <PauseButton onClick={handlePlayButton} />
               ) : (
                 <PlayButton onClick={handlePlayButton} />
               )}
-            </PlayButtonContainer> */}
-
-            <PlayButtonContainer>
-              {isSoundPlaying ? <PauseButton onClick={handlePlayButton} /> : <PlayButton onClick={handlePlayButton} />}
             </PlayButtonContainer>
 
             <SliderContainer>

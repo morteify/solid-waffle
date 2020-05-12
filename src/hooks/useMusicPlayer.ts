@@ -19,12 +19,14 @@ interface MusicPlayerHook {
   currentSoundPosition: number;
   setCurrentSoundPosition: (value: number) => void;
   changeCurrentSoundPosition: (value: number) => void;
+  isLoading: boolean;
 }
 
 function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   const [sound, setSound] = useState<Howl | null>();
   const [soundID, setSoundID] = useState<number>();
   const [isSoundPlaying, setIsSoundPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [volumeValue, setVolumeValue] = useState(0.5);
   const [isMuted, setIsMuted] = useState(false);
   const [currentSoundPositionValue, setCurrentSoundPositionValue] = useState(0);
@@ -35,8 +37,11 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
       format: ['mp3', 'aac', 'flac', 'oog'],
       html5: true,
       volume: volumeValue,
+      preload: true,
       mute: isMuted,
-      onload: (): void => {},
+      onload: (): void => {
+        setIsLoading(false);
+      },
       onloaderror: (id, error): void => {},
       onplay: (id): void => {},
       onpause: (id): void => {},
@@ -50,6 +55,9 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   useEffect(() => {
+    if (soundURL != '') {
+      setIsLoading(true);
+    }
     stopSound();
     setSound(createSound(soundURL as string));
   }, [soundURL]);
@@ -74,6 +82,7 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   const playSound = (): void => {
+    console.log(sound);
     setIsSoundPlaying(true);
     setSoundID(sound?.play());
   };
@@ -90,7 +99,13 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   const getSoundDuration = (): number => {
-    return sound?.duration(soundID) as number;
+    try {
+      const duration = sound?.duration(soundID) as number;
+      return duration;
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
   };
 
   const setCurrentSoundPosition = (value: number): void => {
@@ -116,6 +131,7 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
     currentSoundPosition: currentSoundPositionValue,
     setCurrentSoundPosition,
     changeCurrentSoundPosition,
+    isLoading,
   };
 }
 
