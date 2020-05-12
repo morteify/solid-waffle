@@ -62,6 +62,12 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
     setSound(createSound(soundURL as string));
   }, [soundURL]);
 
+  useEffect(() => {
+    if (!isLoading) {
+      playSound();
+    }
+  }, [isLoading]);
+
   const toggleSoundMute = (): void => {
     if (!isMuted) {
       sound?.mute(true);
@@ -82,7 +88,6 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   const playSound = (): void => {
-    console.log(sound);
     setIsSoundPlaying(true);
     setSoundID(sound?.play());
   };
