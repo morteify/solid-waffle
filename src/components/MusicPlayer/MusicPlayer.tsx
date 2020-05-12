@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { pauseMusic, playMusic, loadMusic } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
 import useMusicPlayer from '../../hooks/useMusicPlayer';
 import styled from 'styled-components';
@@ -238,7 +237,6 @@ function MusicPlayer(): JSX.Element {
         </Col>
         <Col span={10}>
           <PlaybackControl>
-            {console.log('isloading', isLoading)}
             <PlayButtonContainer>
               {isLoading ? (
                 <LoadingIndicator />
