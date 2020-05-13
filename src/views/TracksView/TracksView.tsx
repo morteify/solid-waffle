@@ -84,6 +84,7 @@ function TracksView(): JSX.Element {
                       onClick={(): void => {
                         dispatch(
                           loadMusic({
+                            soundId: track.id.toString(),
                             artistName: track.artist.name,
                             soundURL: 'https://audio.liberta.vip' + track.listen_url,
                             soundName: track.title,
