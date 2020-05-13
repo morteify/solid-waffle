@@ -5,10 +5,10 @@ import { RootReducer } from '../../redux/features/root';
 import useMusicPlayer from '../../hooks/useMusicPlayer';
 import styled from 'styled-components';
 import { Avatar } from 'antd';
-import { Slider, Row, Col, Button, Tooltip } from 'antd';
+import { Slider, Row, Col, List, Popover } from 'antd';
 import { Layout } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { removeMusicFromQueue } from '../../redux/features/musicPlayer';
+import { removeMusicFromQueue, SoundInfo, loadMusic } from '../../redux/features/musicPlayer';
 import {
   SoundOutlined,
   LoadingOutlined,
@@ -34,7 +34,7 @@ const TrackContainer = styled.div`
   padding: 10px;
 `;
 
-const SoundInfo = styled.div`
+const SoundInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -157,6 +157,11 @@ const UnorderedListOutlinedButton = styled(UnorderedListOutlined)`
   }
 `;
 
+const QueuePreviewList = styled(List)`
+  max-height: 25rem;
+  overflow-y: auto;
+`;
+
 interface MusicPlayer {
   soundName?: string;
 }
@@ -187,6 +192,7 @@ function MusicPlayer(): JSX.Element {
     setCurrentSoundPosition,
     changeCurrentSoundPosition,
     isLoading,
+    setOnLoadCallback,
     setOnEndCallback,
   } = useMusicPlayer({ soundURL: soundsToPlay });
 
@@ -196,8 +202,15 @@ function MusicPlayer(): JSX.Element {
         dispatch(removeMusicFromQueue({ position: 0 }));
       };
     };
-
     setOnEndCallback(onEndCallback);
+
+    const onLoadCallback = (itemToUpdate: SoundInfo) => {
+      return () => {
+        console.log('itemToUpdate', itemToUpdate);
+        dispatch(loadMusic(itemToUpdate));
+      };
+    };
+    setOnLoadCallback(onLoadCallback(musicQueue[0]));
   }, [sound]);
 
   useEffect(() => {
@@ -238,10 +251,10 @@ function MusicPlayer(): JSX.Element {
             <AlbumCoverContainer>
               {currentSongCover && <AlbumCover shape="square" src={currentSongCover} />}
             </AlbumCoverContainer>
-            <SoundInfo>
+            <SoundInfoContainer>
               <SoundName>{currentSoundName}</SoundName>
               <AristName>{currentArtistName}</AristName>
-            </SoundInfo>
+            </SoundInfoContainer>
           </TrackContainer>
         </Col>
         <Col span={10}>
@@ -273,7 +286,33 @@ function MusicPlayer(): JSX.Element {
         </Col>
         <Col span={7}>
           <SoundVolumeControl>
-            <UnorderedListOutlinedButton onClick={() => history.push('/queue')} />
+            <Popover
+              content={
+                <QueuePreviewList
+                  className="demo-loadmore-list"
+                  itemLayout="horizontal"
+                  size="small"
+                  dataSource={musicQueue.slice(1, musicQueue.length)}
+                  renderItem={(item: any, index: number) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar style={{ backgroundColor: '#1890ff55', verticalAlign: 'middle' }} size="default">
+                            {index + 2}
+                          </Avatar>
+                        }
+                        title={item.soundName}
+                        description={item.artistName}
+                      />
+                    </List.Item>
+                  )}
+                />
+              }
+              title={`Queue:`}
+              trigger="hover"
+            >
+              <UnorderedListOutlinedButton onClick={() => history.push('/queue')} />
+            </Popover>
             {isMuted || getVolume() === 0 ? (
               <MuteButton onClick={toggleSoundMute} />
             ) : (

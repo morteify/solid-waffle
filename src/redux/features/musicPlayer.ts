@@ -34,16 +34,8 @@ const musicPlayer = createSlice({
   name: 'musicPlayer',
   initialState,
   reducers: {
-    loadMusic(
-      state,
-      action: PayloadAction<{
-        soundId: string;
-        artistName: string;
-        soundName: string;
-        soundURL: string;
-        albumCover: string | null;
-      }>,
-    ): void {
+    loadMusic(state, action: PayloadAction<SoundInfo>): void {
+      console.log(action);
       state.currentTrack = {
         soundId: action?.payload?.soundId,
         soundName: action?.payload?.soundName,

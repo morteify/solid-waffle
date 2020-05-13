@@ -51,14 +51,10 @@ const AppstoreAddOutlinedButton = styled(AppstoreAddOutlined)`
   }
 `;
 
-const selectTracksList = createSelector(
-  (state: RootReducer) => state.tracks.tracks,
-  (tracks) => tracks,
-);
-
 function TracksView(): JSX.Element {
   const dispatch = useDispatch();
-  const tracks = useSelector(selectTracksList);
+  const tracks = useSelector((state: RootReducer) => state.tracks.tracks);
+  const currentTrackId = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.soundId);
 
   useEffect(() => {
     dispatch(fetchTracksStart());
@@ -73,6 +69,7 @@ function TracksView(): JSX.Element {
       albumCover: soundInfo?.album?.cover?.small_square_crop || null,
     };
     dispatch(addMusicToQueue({ soundInfo: currentMusic }));
+    if (currentTrackId === null) dispatch(loadMusic(currentMusic));
   };
 
   return (
