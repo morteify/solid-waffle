@@ -62,12 +62,14 @@ const musicPlayer = createSlice({
       }
     },
     removeMusicFromQueue(state, action: PayloadAction<{ soundID?: string; position?: number }>): void {
-      if (action.payload.position !== undefined) {
-        const currentState = state.queue;
-        currentState.splice(action.payload.position, 1);
-        state.queue = currentState;
-      } else {
-        state.queue = state.queue.filter((item: SoundInfo) => item.soundId !== action.payload);
+      if (state.queue.length > 1) {
+        if (action.payload.position !== undefined) {
+          const currentState = state.queue;
+          currentState.splice(action.payload.position, 1);
+          state.queue = currentState;
+        } else {
+          state.queue = state.queue.filter((item: SoundInfo) => item.soundId !== action.payload);
+        }
       }
     },
   },
