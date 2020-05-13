@@ -8,6 +8,7 @@ import { Avatar } from 'antd';
 import { Slider, Row, Col, Button, Tooltip } from 'antd';
 import { Layout } from 'antd';
 import { useHistory } from 'react-router-dom';
+import { removeMusicFromQueue } from '../../redux/features/musicPlayer';
 import {
   SoundOutlined,
   LoadingOutlined,
@@ -164,10 +165,11 @@ function MusicPlayer(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
   const soundURL = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.soundURL);
+  const musicQueue = useSelector((state: RootReducer) => state.musicPlayer.queue);
   const currentSoundName = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.soundName);
   const currentArtistName = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.artistName);
   const currentSongCover = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.albumCover);
-  const musicQueue = useSelector((state: RootReducer) => state.musicPlayer.queue);
+  const [soundsToPlay, setSoundsToPlay] = useState<string[]>([]);
   const [timer, setTimer] = useState(0);
 
   const {
@@ -186,10 +188,15 @@ function MusicPlayer(): JSX.Element {
     changeCurrentSoundPosition,
     isLoading,
     setOnEndCallback,
-  } = useMusicPlayer({ soundURL });
+  } = useMusicPlayer({ soundURL: soundsToPlay });
 
   useEffect(() => {
-    const onEndCallback = () => () => console.log('onEndCallback');
+    const onEndCallback = () => {
+      return () => {
+        dispatch(removeMusicFromQueue({ position: 0 }));
+      };
+    };
+
     setOnEndCallback(onEndCallback);
   }, [sound]);
 
@@ -198,17 +205,11 @@ function MusicPlayer(): JSX.Element {
     else clearInterval(timer);
   }, [isSoundPlaying]);
 
-  // useEffect(() => {
-  //   const currentTrack = musicQueue[0];
-  //   dispatch(
-  //     loadMusic({
-  //       artistName: (currentTrack as any)?.artist?.name,
-  //       soundURL: 'https://audio.liberta.vip' + (currentTrack as any)?.listen_url,
-  //       soundName: (currentTrack as any)?.title,
-  //       albumCover: (currentTrack as any)?.album?.cover?.small_square_crop || null,
-  //     }),
-  //   );
-  // }, [musicQueue]);
+  useEffect(() => {
+    const musicQueueURLs = musicQueue.map((item) => item.soundURL);
+    const soundsURLs = [...musicQueueURLs];
+    setSoundsToPlay(soundsURLs);
+  }, [soundURL, musicQueue]);
 
   const handleCurrentSoundPosition = (): void => {
     setTimer(
@@ -220,10 +221,12 @@ function MusicPlayer(): JSX.Element {
   };
 
   const handlePlayButton = () => {
-    if (isSoundPlaying) {
-      pauseSound();
-    } else {
-      playSound();
+    if (musicQueue.length !== 0) {
+      if (isSoundPlaying) {
+        pauseSound();
+      } else {
+        playSound();
+      }
     }
   };
 

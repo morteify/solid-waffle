@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Howl } from 'howler';
 
 interface MusicPlayerHookProps {
-  soundURL: string;
+  soundURL: Array<string>;
 }
 
 interface MusicPlayerHook {
@@ -33,9 +33,9 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   const [currentSoundPositionValue, setCurrentSoundPositionValue] = useState(0);
   const [onEndCallback, setOnEndCallback] = useState<() => void | null>();
 
-  const createSound = (...urls: Array<string>): Howl => {
+  const createSound = (urls: Array<string>): Howl => {
     const sound = new Howl({
-      src: [...urls],
+      src: urls,
       format: ['mp3', 'aac', 'flac', 'oog'],
       html5: true,
       volume: volumeValue,
@@ -49,6 +49,7 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
       onpause: (id): void => {},
       onplayerror: (id, error): void => {},
       onend: (id): void => {
+        console.log('ended', urls);
         stopSound();
         if (onEndCallback) onEndCallback();
       },
@@ -58,11 +59,12 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   useEffect(() => {
-    if (soundURL != '') {
+    console.log('new', soundURL);
+    if (soundURL.length !== 0) {
       setIsLoading(true);
     }
     stopSound();
-    setSound(createSound(soundURL as string));
+    setSound(createSound(soundURL as string[]));
   }, [soundURL]);
 
   useEffect(() => {
@@ -91,8 +93,12 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   const playSound = (): void => {
-    setIsSoundPlaying(true);
-    setSoundID(sound?.play());
+    try {
+      setIsSoundPlaying(true);
+      setSoundID(sound?.play());
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const pauseSound = (): void => {
@@ -101,9 +107,13 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   };
 
   const stopSound = (): void => {
-    setIsSoundPlaying(false);
-    setCurrentSoundPosition(0);
-    sound?.stop();
+    try {
+      setIsSoundPlaying(false);
+      setCurrentSoundPosition(0);
+      sound?.stop();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getSoundDuration = (): number => {

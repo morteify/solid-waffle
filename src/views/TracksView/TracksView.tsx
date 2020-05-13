@@ -64,8 +64,15 @@ function TracksView(): JSX.Element {
     dispatch(fetchTracksStart());
   }, []);
 
-  const handleAddToQueueButton = (soundInfo: SoundInfo) => {
-    dispatch(addMusicToQueue({ soundInfo }));
+  const handleAddToQueueButton = (soundInfo: any) => {
+    const currentMusic = {
+      soundId: soundInfo.id.toString(),
+      artistName: soundInfo.artist.name,
+      soundURL: 'https://audio.liberta.vip' + soundInfo.listen_url,
+      soundName: soundInfo.title,
+      albumCover: soundInfo?.album?.cover?.small_square_crop || null,
+    };
+    dispatch(addMusicToQueue({ soundInfo: currentMusic }));
   };
 
   return (
@@ -82,15 +89,15 @@ function TracksView(): JSX.Element {
                   title={
                     <TrackName
                       onClick={(): void => {
-                        dispatch(
-                          loadMusic({
-                            soundId: track.id.toString(),
-                            artistName: track.artist.name,
-                            soundURL: 'https://audio.liberta.vip' + track.listen_url,
-                            soundName: track.title,
-                            albumCover: track?.album?.cover?.small_square_crop || null,
-                          }),
-                        );
+                        const currentMusic = {
+                          soundId: track.id.toString(),
+                          artistName: track.artist.name,
+                          soundURL: 'https://audio.liberta.vip' + track.listen_url,
+                          soundName: track.title,
+                          albumCover: track?.album?.cover?.small_square_crop || null,
+                        };
+                        dispatch(loadMusic(currentMusic));
+                        dispatch(addMusicToQueue({ position: 0, soundInfo: currentMusic }));
                       }}
                     >
                       {track.title}
