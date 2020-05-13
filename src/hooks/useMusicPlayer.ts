@@ -20,6 +20,7 @@ interface MusicPlayerHook {
   setCurrentSoundPosition: (value: number) => void;
   changeCurrentSoundPosition: (value: number) => void;
   isLoading: boolean;
+  setOnEndCallback: (func: () => void) => void;
 }
 
 function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
@@ -30,6 +31,7 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   const [volumeValue, setVolumeValue] = useState(0.5);
   const [isMuted, setIsMuted] = useState(false);
   const [currentSoundPositionValue, setCurrentSoundPositionValue] = useState(0);
+  const [onEndCallback, setOnEndCallback] = useState<() => void | null>();
 
   const createSound = (...urls: Array<string>): Howl => {
     const sound = new Howl({
@@ -48,6 +50,7 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
       onplayerror: (id, error): void => {},
       onend: (id): void => {
         stopSound();
+        if (onEndCallback) onEndCallback();
       },
       onseek: (id): void => {},
     });
@@ -137,6 +140,7 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
     setCurrentSoundPosition,
     changeCurrentSoundPosition,
     isLoading,
+    setOnEndCallback,
   };
 }
 

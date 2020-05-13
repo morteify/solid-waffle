@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootReducer } from '../../redux/features/root';
@@ -185,7 +185,13 @@ function MusicPlayer(): JSX.Element {
     setCurrentSoundPosition,
     changeCurrentSoundPosition,
     isLoading,
+    setOnEndCallback,
   } = useMusicPlayer({ soundURL });
+
+  useEffect(() => {
+    const onEndCallback = () => () => console.log('onEndCallback');
+    setOnEndCallback(onEndCallback);
+  }, [sound]);
 
   useEffect(() => {
     if (isSoundPlaying) handleCurrentSoundPosition();
