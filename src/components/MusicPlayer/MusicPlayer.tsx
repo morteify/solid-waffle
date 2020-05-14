@@ -8,7 +8,14 @@ import { Avatar } from 'antd';
 import { Slider, Row, Col, List, Popover, Badge } from 'antd';
 import { Layout } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { removeMusicFromQueue, SoundInfo, loadMusic } from '../../redux/features/musicPlayer';
+import {
+  removeMusicFromQueue,
+  SoundInfo,
+  loadMusic,
+  addMusicToQueue,
+  addMusicToHistory,
+  removeMusicFromHistory,
+} from '../../redux/features/musicPlayer';
 import {
   SoundOutlined,
   LoadingOutlined,
@@ -205,6 +212,7 @@ function MusicPlayer(): JSX.Element {
   const currentSoundName = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.soundName);
   const currentArtistName = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.artistName);
   const currentSongCover = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.albumCover);
+  const tracksHistory = useSelector((state: RootReducer) => state.musicPlayer.history);
   const [soundsToPlay, setSoundsToPlay] = useState<string[]>([]);
   const [timer, setTimer] = useState(0);
 
@@ -228,12 +236,13 @@ function MusicPlayer(): JSX.Element {
   } = useMusicPlayer({ soundURL: soundsToPlay });
 
   useEffect(() => {
-    const onEndCallback = () => {
+    const onEndCallback = (playedTrack: SoundInfo) => {
       return () => {
+        if (playedTrack !== undefined) dispatch(addMusicToHistory(playedTrack));
         dispatch(removeMusicFromQueue({ position: 0 }));
       };
     };
-    setOnEndCallback(onEndCallback);
+    setOnEndCallback(() => onEndCallback(musicQueue[0]));
 
     const onLoadCallback = (itemToUpdate: SoundInfo) => {
       return () => {
@@ -274,7 +283,13 @@ function MusicPlayer(): JSX.Element {
   };
 
   const handlePlayNextTrackButton = () => {
+    dispatch(addMusicToHistory(musicQueue[0]));
     dispatch(removeMusicFromQueue({ position: 0 }));
+  };
+
+  const handlePlayPreviousTrackButton = () => {
+    dispatch(addMusicToQueue({ position: 0, soundInfo: tracksHistory[tracksHistory.length - 1] }));
+    dispatch(removeMusicFromHistory({ position: tracksHistory.length - 1 }));
   };
 
   return (
@@ -294,7 +309,7 @@ function MusicPlayer(): JSX.Element {
         <Col span={10}>
           <PlaybackControl>
             <PlaybackButtonsContainer>
-              <CaretLeft />
+              <CaretLeft onClick={handlePlayPreviousTrackButton} />
               <PlayButtonContainer>
                 {isLoading ? (
                   <LoadingIndicator />
