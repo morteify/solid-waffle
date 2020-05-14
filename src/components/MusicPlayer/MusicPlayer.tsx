@@ -273,7 +273,9 @@ function MusicPlayer(): JSX.Element {
     }
   };
 
-  const handlePlayNextTrackButton = () => {};
+  const handlePlayNextTrackButton = () => {
+    dispatch(removeMusicFromQueue({ position: 0 }));
+  };
 
   return (
     <Container>
