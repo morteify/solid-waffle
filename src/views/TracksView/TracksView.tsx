@@ -62,7 +62,7 @@ function TracksView(): JSX.Element {
 
   const handleAddToQueueButton = (soundInfo: any) => {
     const currentMusic = {
-      soundId: soundInfo.id.toString(),
+      soundId: soundInfo.id.toString() + Date.now(),
       artistName: soundInfo.artist.name,
       soundURL: 'https://audio.liberta.vip' + soundInfo.listen_url,
       soundName: soundInfo.title,
@@ -87,7 +87,7 @@ function TracksView(): JSX.Element {
                     <TrackName
                       onClick={(): void => {
                         const currentMusic = {
-                          soundId: track.id.toString(),
+                          soundId: track.id.toString() + Date.now(),
                           artistName: track.artist.name,
                           soundURL: 'https://audio.liberta.vip' + track.listen_url,
                           soundName: track.title,

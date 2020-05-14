@@ -60,7 +60,7 @@ const musicPlayer = createSlice({
           currentState.splice(action.payload.position, 1);
           state.queue = currentState;
         } else {
-          state.queue = state.queue.filter((item: SoundInfo) => item.soundId !== action.payload);
+          state.queue = state.queue.filter((item: SoundInfo) => item.soundId !== action.payload.soundID);
         }
       }
     },

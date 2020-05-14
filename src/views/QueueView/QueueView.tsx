@@ -4,6 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootReducer } from '../../redux/features/root';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { removeMusicFromQueue, SoundInfo, loadMusic } from '../../redux/features/musicPlayer';
+import { DeleteOutlined } from '@ant-design/icons';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - 256px);
+  height: calc(100vh - 64px);
+`;
 
 const TrackName = styled.p`
   &:hover {
@@ -18,12 +27,36 @@ const CustomList = styled(List)`
   padding: 1.5rem;
 `;
 
+const ListItemContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-items: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const DeleteOutlinedButton = styled(DeleteOutlined)`
+  font-size: 20px;
+  color: #c0c0c0;
+  margin-left: 30px;
+  &:hover {
+    color: #d4d4d4;
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+`;
+
 function QueueView(): JSX.Element {
   const history = useHistory();
+  const dispatch = useDispatch();
   const tracks = useSelector((state: RootReducer) => state.musicPlayer.queue);
 
+  const handleRemoveFromQueueButton = (track: any) => {
+    dispatch(removeMusicFromQueue({ soundID: track.soundId as string }));
+  };
+
   return (
-    <div>
+    <Container>
       <PageHeader
         className="site-page-header"
         title="QueueView"
@@ -33,18 +66,19 @@ function QueueView(): JSX.Element {
       <CustomList
         dataSource={tracks}
         renderItem={(track: any): JSX.Element => (
-          <>
-            <List.Item key={track.title}>
+          <List.Item key={track.soundId as string}>
+            <ListItemContainer>
               <List.Item.Meta
-                avatar={<Avatar shape="square" size="large" src={track?.album?.cover?.small_square_crop} />}
-                title={<TrackName>{track.title}</TrackName>}
-                description={track.artist.name}
+                avatar={<Avatar shape="square" size="large" src={track.albumCover} />}
+                title={<TrackName>{track.soundName}</TrackName>}
+                description={track.artistName}
               />
-            </List.Item>
-          </>
+              <DeleteOutlinedButton onClick={() => handleRemoveFromQueueButton(track)} />
+            </ListItemContainer>
+          </List.Item>
         )}
       />
-    </div>
+    </Container>
   );
 }
 
