@@ -48,7 +48,6 @@ const musicPlayer = createSlice({
     addMusicToQueue(state, action: PayloadAction<{ soundInfo: SoundInfo; position?: number }>): void {
       if (action.payload.position !== undefined) {
         const currentState = state.queue;
-        // currentState[action.payload.position] = action.payload.soundInfo;
         currentState.splice(action.payload.position, 0, action.payload.soundInfo);
         state.queue = currentState;
       } else {
