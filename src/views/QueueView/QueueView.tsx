@@ -21,7 +21,7 @@ const TrackName = styled.p`
   }
 `;
 
-const CustomList = styled(List)`
+const NextSongsList = styled(List)`
   height: calc(100vh - 100px);
   overflow: auto;
   padding: 1.5rem;
@@ -46,10 +46,24 @@ const DeleteOutlinedButton = styled(DeleteOutlined)`
   }
 `;
 
+const CurrentTrackList = styled(List)`
+  height: 200px;
+  overflow: auto;
+  margin: 1.5rem;
+`;
+
+const PreviousTracksList = styled(List)`
+  height: 200px;
+  overflow: auto;
+  margin: 1.5rem;
+`;
+
 function QueueView(): JSX.Element {
   const history = useHistory();
   const dispatch = useDispatch();
   const tracks = useSelector((state: RootReducer) => state.musicPlayer.queue);
+  const currentTrack = useSelector((state: RootReducer) => state.musicPlayer.currentTrack);
+  const tracksHistory = useSelector((state: RootReducer) => state.musicPlayer.history);
 
   const handleRemoveFromQueueButton = (track: any) => {
     dispatch(removeMusicFromQueue({ soundID: track.soundId as string }));
@@ -63,8 +77,39 @@ function QueueView(): JSX.Element {
         subTitle="Tracks queue"
         onBack={() => history.goBack()}
       />
-      <CustomList
+      <PreviousTracksList
+        dataSource={tracksHistory.length ? [[...tracksHistory].pop()] : []}
+        header={<div>Previously played</div>}
+        renderItem={(track: any): JSX.Element => (
+          <List.Item key={track.soundId as string}>
+            <ListItemContainer>
+              <List.Item.Meta
+                avatar={<Avatar shape="square" size="large" src={track.albumCover} />}
+                title={<TrackName>{track.soundName}</TrackName>}
+                description={track.artistName}
+              />
+            </ListItemContainer>
+          </List.Item>
+        )}
+      />
+      <CurrentTrackList
+        dataSource={[currentTrack]}
+        header={<div>Now playing</div>}
+        renderItem={(track: any, index): JSX.Element => (
+          <List.Item key={index}>
+            <ListItemContainer>
+              <List.Item.Meta
+                avatar={<Avatar shape="square" size="large" src={track.albumCover} />}
+                title={<TrackName>{track.soundName}</TrackName>}
+                description={track.artistName}
+              />
+            </ListItemContainer>
+          </List.Item>
+        )}
+      />
+      <NextSongsList
         dataSource={tracks.slice(1, tracks.length)}
+        header={<div>Next up</div>}
         renderItem={(track: any): JSX.Element => (
           <List.Item key={track.soundId as string}>
             <ListItemContainer>
