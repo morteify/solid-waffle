@@ -94,7 +94,7 @@ function TracksView(): JSX.Element {
                           albumCover: track?.album?.cover?.small_square_crop || null,
                         };
                         dispatch(loadMusic(currentMusic));
-                        dispatch(addMusicToQueue({ position: 0, soundInfo: currentMusic }));
+                        dispatch(addMusicToQueue({ position: 0, soundInfo: currentMusic, replace: true }));
                       }}
                     >
                       {track.title}
@@ -106,7 +106,7 @@ function TracksView(): JSX.Element {
               </ListItemContainer>
             </List.Item>
           )}
-        ></CustomList>
+        />
       </div>
     </Container>
   );

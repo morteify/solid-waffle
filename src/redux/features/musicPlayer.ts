@@ -45,10 +45,17 @@ const musicPlayer = createSlice({
         albumCover: action?.payload?.albumCover as string,
       };
     },
-    addMusicToQueue(state, action: PayloadAction<{ soundInfo: SoundInfo; position?: number }>): void {
+    addMusicToQueue(
+      state,
+      action: PayloadAction<{ soundInfo: SoundInfo; position?: number; replace?: boolean }>,
+    ): void {
       if (action.payload.position !== undefined) {
         const currentState = state.queue;
-        currentState.splice(action.payload.position, 0, action.payload.soundInfo);
+        if (action.payload.replace) {
+          currentState[action.payload.position] = action.payload.soundInfo;
+        } else {
+          currentState.splice(action.payload.position, 0, action.payload.soundInfo);
+        }
         state.queue = currentState;
       } else {
         state.queue = [...state.queue, action.payload.soundInfo];
@@ -66,7 +73,6 @@ const musicPlayer = createSlice({
       }
     },
     addMusicToHistory(state, action: PayloadAction<SoundInfo>): void {
-      console.log(action);
       state.history = [...state.history, action.payload];
     },
     removeMusicFromHistory(state, action: PayloadAction<{ soundID?: string; position?: number }>): void {
