@@ -5,7 +5,7 @@ import { RootReducer } from '../../redux/features/root';
 import useMusicPlayer from '../../hooks/useMusicPlayer';
 import styled from 'styled-components';
 import { Avatar } from 'antd';
-import { Slider, Row, Col, List, Popover } from 'antd';
+import { Slider, Row, Col, List, Popover, Badge } from 'antd';
 import { Layout } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { removeMusicFromQueue, SoundInfo, loadMusic } from '../../redux/features/musicPlayer';
@@ -16,6 +16,8 @@ import {
   PauseCircleOutlined,
   AudioMutedOutlined,
   UnorderedListOutlined,
+  CaretRightOutlined,
+  CaretLeftOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -85,6 +87,12 @@ const PlaybackControl = styled.div`
   padding-top: 10px;
 `;
 
+const PlaybackButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const PlayButtonContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -121,6 +129,28 @@ const PauseButton = styled(PauseCircleOutlined)`
   }
 `;
 
+const CaretRight = styled(CaretRightOutlined)`
+  font-size: 20px;
+  color: #c5c9d1;
+  padding-left: 25px;
+  &:hover {
+    color: #d4d4d4;
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+`;
+
+const CaretLeft = styled(CaretLeftOutlined)`
+  font-size: 20px;
+  color: #c5c9d1;
+  padding-right: 25px;
+  &:hover {
+    color: #d4d4d4;
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+`;
+
 const LoadingIndicator = styled(LoadingOutlined)`
   font-size: 35px;
   color: #c5c9d1;
@@ -129,6 +159,7 @@ const LoadingIndicator = styled(LoadingOutlined)`
 const SoundButton = styled(SoundOutlined)`
   font-size: 20px;
   color: #c0c0c0;
+  margin-left: 20px;
   &:hover {
     color: #d4d4d4;
     cursor: pointer;
@@ -139,6 +170,7 @@ const SoundButton = styled(SoundOutlined)`
 const MuteButton = styled(AudioMutedOutlined)`
   font-size: 20px;
   color: #c0c0c0;
+  margin-left: 20px;
   &:hover {
     color: #d4d4d4;
     cursor: pointer;
@@ -149,7 +181,6 @@ const MuteButton = styled(AudioMutedOutlined)`
 const UnorderedListOutlinedButton = styled(UnorderedListOutlined)`
   font-size: 20px;
   color: #c0c0c0;
-  margin-right: 20px;
   &:hover {
     color: #d4d4d4;
     cursor: pointer;
@@ -206,7 +237,6 @@ function MusicPlayer(): JSX.Element {
 
     const onLoadCallback = (itemToUpdate: SoundInfo) => {
       return () => {
-        console.log('itemToUpdate', itemToUpdate);
         dispatch(loadMusic(itemToUpdate));
       };
     };
@@ -222,7 +252,7 @@ function MusicPlayer(): JSX.Element {
     const musicQueueURLs = musicQueue.map((item) => item.soundURL);
     const soundsURLs = [...musicQueueURLs];
     setSoundsToPlay(soundsURLs);
-  }, [soundURL, musicQueue]);
+  }, [soundURL, musicQueue[0]]);
 
   const handleCurrentSoundPosition = (): void => {
     setTimer(
@@ -243,6 +273,8 @@ function MusicPlayer(): JSX.Element {
     }
   };
 
+  const handlePlayNextTrackButton = () => {};
+
   return (
     <Container>
       <Row>
@@ -259,16 +291,19 @@ function MusicPlayer(): JSX.Element {
         </Col>
         <Col span={10}>
           <PlaybackControl>
-            <PlayButtonContainer>
-              {isLoading ? (
-                <LoadingIndicator />
-              ) : isSoundPlaying ? (
-                <PauseButton onClick={handlePlayButton} />
-              ) : (
-                <PlayButton onClick={handlePlayButton} />
-              )}
-            </PlayButtonContainer>
-
+            <PlaybackButtonsContainer>
+              <CaretLeft />
+              <PlayButtonContainer>
+                {isLoading ? (
+                  <LoadingIndicator />
+                ) : isSoundPlaying ? (
+                  <PauseButton onClick={handlePlayButton} />
+                ) : (
+                  <PlayButton onClick={handlePlayButton} />
+                )}
+              </PlayButtonContainer>
+              <CaretRight onClick={handlePlayNextTrackButton} />
+            </PlaybackButtonsContainer>
             <SliderContainer>
               <div>{moment.utc(moment.duration(currentSoundPosition, 'seconds').asMilliseconds()).format('mm:ss')}</div>
               <SoundProgress
@@ -286,33 +321,34 @@ function MusicPlayer(): JSX.Element {
         </Col>
         <Col span={7}>
           <SoundVolumeControl>
-            <Popover
-              content={
-                <QueuePreviewList
-                  className="demo-loadmore-list"
-                  itemLayout="horizontal"
-                  size="small"
-                  dataSource={musicQueue.slice(1, musicQueue.length)}
-                  renderItem={(item: any, index: number) => (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={
-                          <Avatar style={{ backgroundColor: '#1890ff55', verticalAlign: 'middle' }} size="default">
-                            {index + 2}
-                          </Avatar>
-                        }
-                        title={item.soundName}
-                        description={item.artistName}
-                      />
-                    </List.Item>
-                  )}
-                />
-              }
-              title={`Queue:`}
-              trigger="hover"
-            >
-              <UnorderedListOutlinedButton onClick={() => history.push('/queue')} />
-            </Popover>
+            <Badge count={musicQueue.length > 1 ? musicQueue.length - 1 : 0} overflowCount={15}>
+              <Popover
+                content={
+                  <QueuePreviewList
+                    className="demo-loadmore-list"
+                    size="small"
+                    dataSource={musicQueue.slice(1, musicQueue.length)}
+                    renderItem={(item: any, index: number) => (
+                      <List.Item>
+                        <List.Item.Meta
+                          avatar={
+                            <Avatar style={{ backgroundColor: '#1890ff55', verticalAlign: 'middle' }} size="default">
+                              {index + 1}
+                            </Avatar>
+                          }
+                          title={item.soundName}
+                          description={item.artistName}
+                        />
+                      </List.Item>
+                    )}
+                  />
+                }
+                title={`Next up:`}
+                trigger="hover"
+              >
+                <UnorderedListOutlinedButton onClick={() => history.push('/queue')} />
+              </Popover>
+            </Badge>
             {isMuted || getVolume() === 0 ? (
               <MuteButton onClick={toggleSoundMute} />
             ) : (

@@ -64,7 +64,7 @@ function QueueView(): JSX.Element {
         onBack={() => history.goBack()}
       />
       <CustomList
-        dataSource={tracks}
+        dataSource={tracks.slice(1, tracks.length)}
         renderItem={(track: any): JSX.Element => (
           <List.Item key={track.soundId as string}>
             <ListItemContainer>
