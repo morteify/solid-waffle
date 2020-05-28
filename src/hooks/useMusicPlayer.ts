@@ -9,6 +9,10 @@ interface MusicPlayerHook {
   sound: Howl;
   soundID: number;
   isSoundPlaying: boolean;
+  changeCurrentSoundPosition: (value: number) => void;
+  isLoading: boolean;
+  setOnLoadCallback: (func: () => void) => void;
+  setOnEndCallback: (func: () => void) => void;
   playSound: () => void;
   pauseSound: () => void;
   getVolume: () => number;
@@ -18,10 +22,6 @@ interface MusicPlayerHook {
   getSoundDuration: () => number;
   currentSoundPosition: number;
   setCurrentSoundPosition: (value: number) => void;
-  changeCurrentSoundPosition: (value: number) => void;
-  isLoading: boolean;
-  setOnLoadCallback: (func: () => void) => void;
-  setOnEndCallback: (func: () => void) => void;
 }
 
 function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
@@ -109,15 +109,15 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
         setIsLoading(false);
         if (onLoadCallback) onLoadCallback();
       },
-      onloaderror: (id, error): void => {},
-      onplay: (id): void => {},
-      onpause: (id): void => {},
-      onplayerror: (id, error): void => {},
+      // onloaderror: (id, error): void => {},
+      // onplay: (id): void => {},
+      // onpause: (id): void => {},
+      // onplayerror: (id, error): void => {},
       onend: (id): void => {
         stopSound();
         if (onEndCallback) onEndCallback();
       },
-      onseek: (id): void => {},
+      // onseek: (id): void => {},
     });
     return sound;
   };

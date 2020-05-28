@@ -13,7 +13,7 @@ function SideMenu() {
   return (
     <Menu
       onClick={handleClick}
-      style={{ width: 256, height: '100vh' }}
+      style={{ width: 256, height: '100vh', paddingTop: '10px' }}
       defaultSelectedKeys={['songs']}
       defaultOpenKeys={['sub1']}
       mode="inline"

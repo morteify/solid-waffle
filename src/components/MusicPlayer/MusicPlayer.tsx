@@ -237,7 +237,7 @@ function MusicPlayer(): JSX.Element {
 
   useEffect(() => {
     const onEndCallback = (playedTrack: SoundInfo) => {
-      return () => {
+      return (): void => {
         if (playedTrack !== undefined) dispatch(addMusicToHistory(playedTrack));
         dispatch(removeMusicFromQueue({ position: 0 }));
       };
@@ -245,12 +245,21 @@ function MusicPlayer(): JSX.Element {
     setOnEndCallback(() => onEndCallback(musicQueue[0]));
 
     const onLoadCallback = (itemToUpdate: SoundInfo) => {
-      return () => {
+      return (): void => {
         dispatch(loadMusic(itemToUpdate));
       };
     };
     setOnLoadCallback(onLoadCallback(musicQueue[0]));
   }, [sound]);
+
+  const handleCurrentSoundPosition = (): void => {
+    setTimer(
+      setInterval(() => {
+        const val = Math.round(sound?.seek(soundID) as number);
+        if (!Number.isNaN(val)) setCurrentSoundPosition(val);
+      }, 500),
+    );
+  };
 
   useEffect(() => {
     if (isSoundPlaying) handleCurrentSoundPosition();
@@ -263,16 +272,7 @@ function MusicPlayer(): JSX.Element {
     setSoundsToPlay(soundsURLs);
   }, [soundURL, musicQueue[0]]);
 
-  const handleCurrentSoundPosition = (): void => {
-    setTimer(
-      setInterval(() => {
-        const val = Math.round(sound?.seek(soundID) as number);
-        if (!Number.isNaN(val)) setCurrentSoundPosition(val);
-      }, 500),
-    );
-  };
-
-  const handlePlayButton = () => {
+  const handlePlayButton = (): void => {
     if (musicQueue.length !== 0) {
       if (isSoundPlaying) {
         pauseSound();
@@ -282,12 +282,12 @@ function MusicPlayer(): JSX.Element {
     }
   };
 
-  const handlePlayNextTrackButton = () => {
+  const handlePlayNextTrackButton = (): void => {
     dispatch(addMusicToHistory(musicQueue[0]));
     dispatch(removeMusicFromQueue({ position: 0 }));
   };
 
-  const handlePlayPreviousTrackButton = () => {
+  const handlePlayPreviousTrackButton = (): void => {
     dispatch(addMusicToQueue({ position: 0, soundInfo: tracksHistory[tracksHistory.length - 1] }));
     dispatch(removeMusicFromHistory({ position: tracksHistory.length - 1 }));
   };
