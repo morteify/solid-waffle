@@ -95,7 +95,7 @@ function QueueView(): JSX.Element {
       <CurrentTrackList
         dataSource={[currentTrack]}
         header={<div>Now playing</div>}
-        renderItem={(track: any, index): JSX.Element => (
+        renderItem={(track: any, index: number): JSX.Element => (
           <List.Item key={index}>
             <ListItemContainer>
               <List.Item.Meta

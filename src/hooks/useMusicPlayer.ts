@@ -35,6 +35,68 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
   const [onLoadCallback, setOnLoadCallback] = useState<() => void | null>();
   const [onEndCallback, setOnEndCallback] = useState<() => void | null>();
 
+  const toggleSoundMute = (): void => {
+    if (!isMuted) {
+      sound?.mute(true);
+      setIsMuted(true);
+    } else {
+      sound?.mute(false);
+      setIsMuted(false);
+    }
+  };
+
+  const getVolume = (): number => {
+    return volumeValue;
+  };
+
+  const setVolume = (value: number): void => {
+    sound?.volume(value);
+    setVolumeValue(value);
+  };
+
+  const playSound = (): void => {
+    try {
+      setIsSoundPlaying(true);
+      setSoundID(sound?.play());
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const pauseSound = (): void => {
+    setIsSoundPlaying(false);
+    sound?.pause();
+  };
+
+  const setCurrentSoundPosition = (value: number): void => {
+    setCurrentSoundPositionValue(value);
+  };
+
+  const stopSound = (): void => {
+    try {
+      setIsSoundPlaying(false);
+      setCurrentSoundPosition(0);
+      sound?.stop();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getSoundDuration = (): number => {
+    try {
+      const duration = sound?.duration(soundID) as number;
+      return duration;
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
+  };
+
+  const changeCurrentSoundPosition = (value: number): void => {
+    setCurrentSoundPositionValue(value);
+    sound?.seek(value, soundID);
+  };
+
   const createSound = (urls: Array<string>): Howl => {
     const sound = new Howl({
       src: urls,
@@ -73,68 +135,6 @@ function useMusicPlayer({ soundURL }: MusicPlayerHookProps): MusicPlayerHook {
       playSound();
     }
   }, [isLoading]);
-
-  const toggleSoundMute = (): void => {
-    if (!isMuted) {
-      sound?.mute(true);
-      setIsMuted(true);
-    } else {
-      sound?.mute(false);
-      setIsMuted(false);
-    }
-  };
-
-  const getVolume = (): number => {
-    return volumeValue;
-  };
-
-  const setVolume = (value: number): void => {
-    sound?.volume(value);
-    setVolumeValue(value);
-  };
-
-  const playSound = (): void => {
-    try {
-      setIsSoundPlaying(true);
-      setSoundID(sound?.play());
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const pauseSound = (): void => {
-    setIsSoundPlaying(false);
-    sound?.pause();
-  };
-
-  const stopSound = (): void => {
-    try {
-      setIsSoundPlaying(false);
-      setCurrentSoundPosition(0);
-      sound?.stop();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getSoundDuration = (): number => {
-    try {
-      const duration = sound?.duration(soundID) as number;
-      return duration;
-    } catch (error) {
-      console.error(error);
-      return 0;
-    }
-  };
-
-  const setCurrentSoundPosition = (value: number): void => {
-    setCurrentSoundPositionValue(value);
-  };
-
-  const changeCurrentSoundPosition = (value: number): void => {
-    setCurrentSoundPositionValue(value);
-    sound?.seek(value, soundID);
-  };
 
   return {
     sound: sound as Howl,
