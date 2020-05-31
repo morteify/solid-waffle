@@ -55,7 +55,7 @@ const AppstoreAddOutlinedButton = styled(AppstoreAddOutlined)`
 
 const HeaderPicture = styled.img`
   width: 100%;
-  height: 300px;
+  height: 250px;
   object-fit: cover;
   position: relative;
   background-attachment: fixed;
@@ -65,7 +65,7 @@ const HeaderPicture = styled.img`
 const CustomPageHeader = styled.div`
   background-color: rgba(0, 0, 0, 0);
   position: absolute;
-  top: calc(300px - 64px);
+  top: calc(250px - 64px);
 `;
 
 const PageTitle = styled.p`
@@ -81,9 +81,6 @@ function TracksView(): JSX.Element {
   const currentTrackId = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.soundId);
   useEffect(() => {
     dispatch(fetchTracksStart());
-    window.addEventListener('scroll', () => {
-      console.log('scroll');
-    });
   }, []);
 
   useEffect(() => {
@@ -114,6 +111,7 @@ function TracksView(): JSX.Element {
           <List.Item key={track.title}>
             <ListItemContainer>
               <List.Item.Meta
+                style={{ alignItems: 'center', margin: 0 }}
                 avatar={<Avatar shape="square" size="large" src={track?.album?.cover?.small_square_crop} />}
                 title={
                   <TrackName

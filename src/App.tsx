@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import './App.css';
 import SideMenu from './components/SideMenu/SideMenu';
 import Tracks from './views/TracksView/TracksView';
+import Albums from './views/AlbumsView/AlbumsView';
 import Queue from './views/QueueView/QueueView';
 import MusicPlayer from './components/MusicPlayer/MusicPlayer';
 
@@ -14,13 +15,9 @@ function App(): JSX.Element {
         <MusicPlayer />
         <Switch>
           <Redirect exact from="/" to="/songs" />
-          {/* <Route path="/home">
-            <div>home</div>
-          </Route> */}
           <Route path="/songs" component={Tracks} />
-          <Route path="/albums">
-            <div>albums</div>
-          </Route>
+          <Route path="/albums" component={Albums} />
+
           <Route path="/artists">
             <div>artists</div>
           </Route>
