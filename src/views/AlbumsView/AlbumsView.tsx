@@ -7,7 +7,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { fetchAlbumsStart, fetchAlbumsSuccess, fetchAlbumsFailure } from '../../redux/features/albums';
 import { loadMusic, addMusicToQueue, SoundInfo } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
-import { List, message, Avatar, Badge, PageHeader } from 'antd';
+import { List, message, Avatar, Badge, PageHeader, Tag } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -76,6 +76,7 @@ const PageTitle = styled.p`
 
 function AlbumsView() {
   const dispatch = useDispatch();
+  const albums = useSelector((state: RootReducer) => state.albums.albums);
 
   useEffect(() => {
     dispatch(fetchAlbumsStart());
@@ -88,8 +89,38 @@ function AlbumsView() {
         <PageTitle>Albums</PageTitle>
       </CustomPageHeader>
       <CustomList
-        dataSource={[{ title: 'hmm' }]}
-        renderItem={(track: any): JSX.Element => <List.Item key={track.title}></List.Item>}
+        dataSource={albums}
+        renderItem={(album: any): JSX.Element => (
+          <List.Item
+            key={album.title}
+            actions={album.tags.map((tag: string) => (
+              <Tag key="list-vertical-star-o">{tag}</Tag>
+            ))}
+          >
+            <List.Item.Meta
+              style={{ alignItems: 'center', margin: 0 }}
+              avatar={<Avatar shape="square" size="large" src={album?.cover?.small_square_crop} />}
+              title={
+                <TrackName
+                  onClick={(): void => {
+                    // const currentMusic = {
+                    //   soundId: track.id.toString() + Date.now(),
+                    //   artistName: track.artist.name,
+                    //   soundURL: 'https://audio.liberta.vip' + track.listen_url,
+                    //   soundName: track.title,
+                    //   albumCover: track?.album?.cover?.small_square_crop || null,
+                    // };
+                    // dispatch(loadMusic(currentMusic));
+                    // dispatch(addMusicToQueue({ position: 0, soundInfo: currentMusic, replace: true }));
+                  }}
+                >
+                  {album.title}
+                </TrackName>
+              }
+              description={album.artist.name}
+            />
+          </List.Item>
+        )}
       />
     </Container>
   );
