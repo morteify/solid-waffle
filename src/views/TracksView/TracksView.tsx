@@ -1,7 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import { Track } from '../../redux/features/tracks';
-import { useHistory } from 'react-router-dom';
-import { Howl, Howler } from 'howler';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import { fetchTracksStart, fetchTracksSuccess, fetchTracksFailure, TracksType } from '../../redux/features/tracks';
@@ -12,6 +9,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import stagePic from '../../assets/stage.jpg';
+import defaultAlbumPic from '../../assets/default-album.png';
 
 const Container = styled.div`
   display: flex;
@@ -83,10 +81,6 @@ function TracksView(): JSX.Element {
     dispatch(fetchTracksStart());
   }, []);
 
-  useEffect(() => {
-    console.log((antListRef.current as any).getBoundingClientRect());
-  }, [antListRef.current]);
-
   const handleAddToQueueButton = (soundInfo: any) => {
     const currentMusic = {
       soundId: soundInfo.id.toString() + Date.now(),
@@ -100,7 +94,7 @@ function TracksView(): JSX.Element {
   };
 
   return (
-    <Container ref={antListRef}>
+    <Container>
       <HeaderPicture src={stagePic} />
       <CustomPageHeader>
         <PageTitle>All Tracks</PageTitle>
@@ -112,7 +106,13 @@ function TracksView(): JSX.Element {
             <ListItemContainer>
               <List.Item.Meta
                 style={{ alignItems: 'center', margin: 0 }}
-                avatar={<Avatar shape="square" size="large" src={track?.album?.cover?.small_square_crop} />}
+                avatar={
+                  <Avatar
+                    shape="square"
+                    size="large"
+                    src={track?.album?.cover?.small_square_crop ? track.album.cover.small_square_crop : defaultAlbumPic}
+                  />
+                }
                 title={
                   <TrackName
                     onClick={(): void => {

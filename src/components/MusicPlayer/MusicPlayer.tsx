@@ -363,7 +363,7 @@ function MusicPlayer(): JSX.Element {
                 title={`Next up:`}
                 trigger="hover"
               >
-                <UnorderedListOutlinedButton onClick={() => history.push('/queue')} />
+                <UnorderedListOutlinedButton onClick={(): void => history.push('/queue')} />
               </Popover>
             </Badge>
             {isMuted || getVolume() === 0 ? (
@@ -378,7 +378,7 @@ function MusicPlayer(): JSX.Element {
                 max={1}
                 step={0.01}
                 value={getVolume()}
-                tipFormatter={(value) => Math.round(value * 100)}
+                tipFormatter={(value): number => Math.round(value * 100)}
                 onChange={(value: number | [number, number]): void => setVolume(value as number)}
               />
             </VolumeSliderContainer>

@@ -4,15 +4,16 @@ import { useHistory } from 'react-router-dom';
 import { Howl, Howler } from 'howler';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { fetchAlbumsStart, fetchAlbumsSuccess, fetchAlbumsFailure } from '../../redux/features/albums';
+import { fetchArtistsStart } from '../../redux/features/artists';
 import { loadMusic, addMusicToQueue, SoundInfo } from '../../redux/features/musicPlayer';
 import { RootReducer } from '../../redux/features/root';
 import { List, message, Avatar, Badge, PageHeader, Tag } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import albumsPic from '../../assets/albums.jpg';
-import defaultAlbumPic from '../../assets/default-album.png';
+import stage2Pic from '../../assets/stage2.jpg';
+import defaultArtist from '../../assets/default-artist.png';
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -32,25 +33,6 @@ const CustomList = styled(List)`
   /* height: calc(100vh - 64); */
   overflow: auto;
   padding: 1.5rem;
-`;
-
-const ListItemContainer = styled.div`
-  display: flex;
-  flex-direction: 'row';
-  justify-items: space-between;
-  align-items: center;
-  width: 100%;
-`;
-
-const AppstoreAddOutlinedButton = styled(AppstoreAddOutlined)`
-  font-size: 20px;
-  color: #c0c0c0;
-  margin-left: 30px;
-  &:hover {
-    color: #d4d4d4;
-    cursor: pointer;
-    transform: scale(1.05);
-  }
 `;
 
 const HeaderPicture = styled.img`
@@ -74,36 +56,31 @@ const PageTitle = styled.p`
   padding-left: 20px;
 `;
 
-function AlbumsView() {
+function ArtistsView() {
   const dispatch = useDispatch();
-  const albums = useSelector((state: RootReducer) => state.albums.albums);
+  const artists = useSelector((state: RootReducer) => state.artists.artists);
 
   useEffect(() => {
-    dispatch(fetchAlbumsStart());
+    dispatch(fetchArtistsStart());
   }, []);
 
   return (
     <Container>
-      <HeaderPicture src={albumsPic} />
+      <HeaderPicture src={stage2Pic} />
       <CustomPageHeader>
-        <PageTitle>Albums</PageTitle>
+        <PageTitle>Artists</PageTitle>
       </CustomPageHeader>
       <CustomList
-        dataSource={albums}
-        renderItem={(album: any): JSX.Element => (
-          <List.Item
-            key={album.title}
-            actions={album.tags.map((tag: string) => (
-              <Tag key="list-vertical-star-o">{tag}</Tag>
-            ))}
-          >
+        dataSource={artists}
+        renderItem={(artist: any): JSX.Element => (
+          <List.Item key={artist.name}>
             <List.Item.Meta
               style={{ alignItems: 'center', margin: 0 }}
               avatar={
                 <Avatar
-                  shape="square"
+                  shape="circle"
                   size="large"
-                  src={album?.cover?.small_square_crop ? album.cover.small_square_crop : defaultAlbumPic}
+                  src={artist?.cover?.small_square_crop ? artist.cover.small_square_crop : defaultArtist}
                 />
               }
               title={
@@ -120,10 +97,10 @@ function AlbumsView() {
                     // dispatch(addMusicToQueue({ position: 0, soundInfo: currentMusic, replace: true }));
                   }}
                 >
-                  {album.title}
+                  {artist.name}
                 </TrackName>
               }
-              description={album.artist.name}
+              //   description={album.artist.name}
             />
           </List.Item>
         )}
@@ -132,4 +109,4 @@ function AlbumsView() {
   );
 }
 
-export default AlbumsView;
+export default ArtistsView;

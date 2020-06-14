@@ -3,13 +3,15 @@ import { combineEpics } from 'redux-observable';
 import tracks, { fetchTracksEpic } from './tracks';
 import musicPlayer from './musicPlayer';
 import albums, { fetchAlbumsEpic } from './albums';
+import artists, { fetchArtistsEpic } from './artists';
 
-export const rootEpic = combineEpics(fetchTracksEpic, fetchAlbumsEpic);
+export const rootEpic = combineEpics(fetchTracksEpic, fetchAlbumsEpic, fetchArtistsEpic);
 
 export const rootReducer = combineReducers({
   tracks,
   albums,
   musicPlayer,
+  artists,
 });
 
 export type RootReducer = ReturnType<typeof rootReducer>;
