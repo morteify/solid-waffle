@@ -84,7 +84,7 @@ function InitialView() {
       <Logo src={funkwhales} />
       <div>
         <InputWithLabelContainer style={{ marginBottom: 16 }}>
-          <Label>Enter an url of an instance you want to connect to</Label>
+          <Label>Enter a url of an instance you want to connect to</Label>
           <Input
             addonBefore={selectBefore}
             defaultValue=""
