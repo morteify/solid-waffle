@@ -13,6 +13,7 @@ import { AppstoreAddOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import stage2Pic from '../../assets/stage2.jpg';
 import defaultArtist from '../../assets/default-artist.png';
+import useVerifyAccessRights from '../../hooks/useVerifyAccessRights';
 
 const Container = styled.div`
   display: flex;
@@ -59,6 +60,7 @@ const PageTitle = styled.p`
 function ArtistsView() {
   const dispatch = useDispatch();
   const artists = useSelector((state: RootReducer) => state.artists.artists);
+  const { hasAccessRights } = useVerifyAccessRights({ redirectTo: '/start' });
 
   useEffect(() => {
     dispatch(fetchArtistsStart());
@@ -83,24 +85,7 @@ function ArtistsView() {
                   src={artist?.cover?.small_square_crop ? artist.cover.small_square_crop : defaultArtist}
                 />
               }
-              title={
-                <TrackName
-                  onClick={(): void => {
-                    // const currentMusic = {
-                    //   soundId: track.id.toString() + Date.now(),
-                    //   artistName: track.artist.name,
-                    //   soundURL: 'https://audio.liberta.vip' + track.listen_url,
-                    //   soundName: track.title,
-                    //   albumCover: track?.album?.cover?.small_square_crop || null,
-                    // };
-                    // dispatch(loadMusic(currentMusic));
-                    // dispatch(addMusicToQueue({ position: 0, soundInfo: currentMusic, replace: true }));
-                  }}
-                >
-                  {artist.name}
-                </TrackName>
-              }
-              //   description={album.artist.name}
+              title={<TrackName>{artist.name}</TrackName>}
             />
           </List.Item>
         )}

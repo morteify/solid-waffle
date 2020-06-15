@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { removeMusicFromQueue, SoundInfo, loadMusic } from '../../redux/features/musicPlayer';
 import { DeleteOutlined } from '@ant-design/icons';
+import useVerifyAccessRights from '../../hooks/useVerifyAccessRights';
 
 const Container = styled.div`
   display: flex;
@@ -60,6 +61,7 @@ function QueueView(): JSX.Element {
   const tracks = useSelector((state: RootReducer) => state.musicPlayer.queue);
   const currentTrack = useSelector((state: RootReducer) => state.musicPlayer.currentTrack);
   const tracksHistory = useSelector((state: RootReducer) => state.musicPlayer.history);
+  const { hasAccessRights } = useVerifyAccessRights({ redirectTo: '/start' });
 
   const handleRemoveFromQueueButton = (track: any) => {
     dispatch(removeMusicFromQueue({ soundID: track.soundId as string }));

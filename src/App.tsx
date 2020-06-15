@@ -17,11 +17,11 @@ function App(): JSX.Element {
         <MusicPlayer />
         <Switch>
           <Redirect exact from="/" to="/start" />
-          <Route path="/start" component={IntialView} />
-          <Route path="/songs" component={Tracks} />
-          <Route path="/albums" component={Albums} />
-          <Route path="/artists" component={Artists} />
-          <Route path="/queue" component={Queue} />
+          <Route exact path="/start" component={IntialView} />
+          <Route exact path="/songs" component={Tracks} />
+          <Route exact path="/albums" component={Albums} />
+          <Route exact path="/artists" component={Artists} />
+          <Route exact path="/queue" component={Queue} />
         </Switch>
       </div>
     </Router>

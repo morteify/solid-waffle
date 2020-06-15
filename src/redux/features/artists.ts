@@ -29,7 +29,7 @@ const artists = createSlice({
       state.error = null;
     },
     fetchArtistsSuccess(state, action: PayloadAction<any>): void {
-      state.artists = action.payload.results;
+      state.artists = action?.payload?.results;
       state.isLoading = false;
       state.error = null;
     },

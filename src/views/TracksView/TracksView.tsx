@@ -10,6 +10,7 @@ import { AppstoreAddOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import stagePic from '../../assets/stage.jpg';
 import defaultAlbumPic from '../../assets/default-album.png';
+import useVerifyAccessRights from '../../hooks/useVerifyAccessRights';
 
 const Container = styled.div`
   display: flex;
@@ -77,11 +78,13 @@ function TracksView(): JSX.Element {
   const antListRef = useRef(null);
   const tracks = useSelector((state: RootReducer) => state.tracks.tracks);
   const currentTrackId = useSelector((state: RootReducer) => state.musicPlayer.currentTrack.soundId);
+  const { hasAccessRights } = useVerifyAccessRights({ redirectTo: '/start' });
+
   useEffect(() => {
     dispatch(fetchTracksStart());
   }, []);
 
-  const handleAddToQueueButton = (soundInfo: any) => {
+  const handleAddToQueueButton = (soundInfo: any): void => {
     const currentMusic = {
       soundId: soundInfo.id.toString() + Date.now(),
       artistName: soundInfo.artist.name,

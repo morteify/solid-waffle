@@ -29,7 +29,7 @@ const albums = createSlice({
       state.error = null;
     },
     fetchAlbumsSuccess(state, action: PayloadAction<AlbumsApiResponse>): void {
-      state.albums = action.payload.results;
+      state.albums = action?.payload?.results;
       state.isLoading = false;
       state.error = null;
     },
