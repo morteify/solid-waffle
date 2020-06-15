@@ -21,7 +21,7 @@ const initialState: TracksState = {
 };
 
 const artists = createSlice({
-  name: 'albums',
+  name: 'artists',
   initialState,
   reducers: {
     fetchArtistsStart(state): void {

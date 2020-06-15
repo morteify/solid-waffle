@@ -47,14 +47,10 @@ const DeleteOutlinedButton = styled(DeleteOutlined)`
 `;
 
 const CurrentTrackList = styled(List)`
-  height: 200px;
-  overflow: auto;
   margin: 1.5rem;
 `;
 
 const PreviousTracksList = styled(List)`
-  height: 200px;
-  overflow: auto;
   margin: 1.5rem;
 `;
 
@@ -75,10 +71,10 @@ function QueueView(): JSX.Element {
         className="site-page-header"
         title="QueueView"
         subTitle="Tracks queue"
-        onBack={() => history.goBack()}
+        onBack={(): void => history.goBack()}
       />
       <PreviousTracksList
-        dataSource={tracksHistory.length ? [[...tracksHistory].pop()] : []}
+        dataSource={tracksHistory.length ? [[...tracksHistory].pop()] : [{}]}
         header={<div>Previously played</div>}
         renderItem={(track: any): JSX.Element => (
           <List.Item key={track.soundId as string}>
@@ -108,7 +104,7 @@ function QueueView(): JSX.Element {
         )}
       />
       <NextSongsList
-        dataSource={tracks.slice(1, tracks.length)}
+        dataSource={tracks.length ? tracks.slice(1, tracks.length) : [{}]}
         header={<div>Next up</div>}
         renderItem={(track: any): JSX.Element => (
           <List.Item key={track.soundId as string}>
@@ -118,7 +114,7 @@ function QueueView(): JSX.Element {
                 title={<TrackName>{track.soundName}</TrackName>}
                 description={track.artistName}
               />
-              <DeleteOutlinedButton onClick={() => handleRemoveFromQueueButton(track)} />
+              <DeleteOutlinedButton onClick={(): void => handleRemoveFromQueueButton(track)} />
             </ListItemContainer>
           </List.Item>
         )}
