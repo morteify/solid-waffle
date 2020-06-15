@@ -44,27 +44,40 @@ const Logo = styled.img`
 function InitialView() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [selectedProtocol, setSelectedProtocol] = useState('https://');
   const [selectedUrl, setSelectedUrl] = useState('');
+  const [enteredUrl, setEnteredUrl] = useState('');
   const currentUrl = useSelector((state: RootReducer) => state.currentSession.url);
 
   useEffect(() => {
     if (currentUrl) history.push('/songs');
   }, [currentUrl]);
 
-  const handleConfirm = () => {
-    dispatch(setInstanceUrl({ url: selectedUrl }));
+  const handleConfirm = (): void => {
+    if (selectedUrl.length) dispatch(setInstanceUrl({ url: selectedUrl }));
+    else if (enteredUrl.length) dispatch(setInstanceUrl({ url: selectedProtocol + enteredUrl }));
+  };
+
+  const handleSelectChange = (instanceUrl: string): void => {
+    setSelectedUrl(instanceUrl);
+    setEnteredUrl('');
+  };
+
+  const handleProtocolChange = (protocol: string): void => {
+    setSelectedProtocol(protocol);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setSelectedUrl('');
+    setEnteredUrl(event.currentTarget.value);
   };
 
   const selectBefore = (
-    <Select defaultValue="http://" className="select-before" size="large">
+    <Select defaultValue="https://" className="select-before" size="large" onChange={handleProtocolChange}>
       <Option value="http://">http://</Option>
       <Option value="https://">https://</Option>
     </Select>
   );
-
-  const handleSelectChange = (instanceUrl: string): void => {
-    setSelectedUrl(instanceUrl);
-  };
 
   return (
     <Container>
@@ -72,12 +85,18 @@ function InitialView() {
       <div>
         <InputWithLabelContainer style={{ marginBottom: 16 }}>
           <Label>Enter an url of an instance you want to connect to</Label>
-          <Input addonBefore={selectBefore} defaultValue="" style={{ width: '30em' }} />
+          <Input
+            addonBefore={selectBefore}
+            defaultValue=""
+            style={{ width: '30em' }}
+            value={enteredUrl}
+            onChange={handleInputChange}
+          />
         </InputWithLabelContainer>
         <InputWithLabelContainer>
           <Label> or select from a predefined list</Label>
           <Input.Group>
-            <Select defaultValue="" style={{ width: '30em' }} onChange={handleSelectChange}>
+            <Select defaultValue="" style={{ width: '30em' }} onChange={handleSelectChange} value={selectedUrl}>
               <Option value="https://audio.liberta.vip">audio.liberta.vip</Option>
               <Option value="https://audio.gafamfree.party">audio.gafamfree.party</Option>
               <Option value="https://music.librepunk.club">music.librepunk.club</Option>

@@ -49,11 +49,11 @@ export type FetchArtistsEpicAction =
   | ReturnType<typeof fetchArtistsFailure>
   | ReturnType<typeof fetchArtistsStart>;
 
-export const fetchArtistsEpic: Epic<FetchArtistsEpicAction, FetchArtistsEpicAction> = (action$) =>
+export const fetchArtistsEpic: Epic<FetchArtistsEpicAction, FetchArtistsEpicAction> = (action$, state$) =>
   action$.pipe(
     ofType(fetchArtistsStart.type),
     mergeMap((action) =>
-      ajax.getJSON('https://audio.liberta.vip/api/v1/artists').pipe(
+      ajax.getJSON(`${state$.value.currentSession?.url}/api/v1/artists`).pipe(
         map((response) => fetchArtistsSuccess(response as ArtistsApiResponse)),
         catchError((error) => of(fetchArtistsFailure(JSON.stringify(error)))),
       ),

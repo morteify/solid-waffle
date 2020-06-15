@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ajax } from 'rxjs/ajax';
-import { map, mergeMap, catchError } from 'rxjs/operators';
+import { map, mergeMap, catchError, tap } from 'rxjs/operators';
 import { ofType, Epic } from 'redux-observable';
 import { of } from 'rxjs';
+import { RootReducer } from './root';
 
 export interface Track {
   title: string;
@@ -36,7 +37,7 @@ const tracks = createSlice({
       state.error = null;
     },
     fetchTracksSuccess(state, action: PayloadAction<TracksApiResponse>): void {
-      state.tracks = action.payload.results;
+      state.tracks = action?.payload?.results;
       state.isLoading = false;
       state.error = null;
     },
@@ -56,11 +57,11 @@ export type FetchTrackEpicAction =
   | ReturnType<typeof fetchTracksFailure>
   | ReturnType<typeof fetchTracksStart>;
 
-export const fetchTracksEpic: Epic<FetchTrackEpicAction, FetchTrackEpicAction> = (action$) =>
+export const fetchTracksEpic: Epic<FetchTrackEpicAction, FetchTrackEpicAction> = (action$, state$) =>
   action$.pipe(
     ofType(fetchTracksStart.type),
     mergeMap((action) =>
-      ajax.getJSON('https://audio.liberta.vip/api/v1/tracks').pipe(
+      ajax.getJSON(`${state$.value.currentSession?.url}/api/v1/tracks`).pipe(
         map((response) => fetchTracksSuccess(response as TracksApiResponse)),
         catchError((error) => of(fetchTracksFailure(JSON.stringify(error)))),
       ),
